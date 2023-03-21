@@ -1,5 +1,5 @@
---- 
-title: "Mushrooms"
+---
+title: "Bank Marketing"
 author: "Zixun Zhang"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
@@ -7,3 +7,8 @@ site: bookdown::bookdown_site
 
 # Proposal
 
+Introduction
+
+Data
+
+The data set in this project is the Bank Market Data Set from UC Irvine
