@@ -11,4 +11,18 @@ Introduction
 
 Data
 
-The data set in this project is the Bank Market Data Set from UC Irvine
+The data set in this project is the Bank Market Data Set from UC Irvine Machine Learning Repository. It contains the costumer persona of bank client. The features includes age, marital status, education status etc. The label of the data set is whether the customer subscribed a term deposit.
+
+Modeling Goal
+
+Geneate a predictive model where we get specific information of a client and identify if the client subscribed a term deposit.
+
+Methodology
+
+1.  Logistic regression
+
+2.  Decision Tree
+
+3.  Random Forest
+
+    The Goal of the models is not only seeking for accuracy but also interpretability. Visualization tools such as confusion matrix, ROC curve, and feature importance plot will be deployed in the project to ensure the models are understandable and reproducible.
