@@ -7,8 +7,6 @@ site: bookdown::bookdown_site
 
 # Proposal
 
-Introduction
-
 Data
 
 The data set in this project is the Bank Market Data Set from UC Irvine Machine Learning Repository. It contains the costumer persona of bank client. The feature contains as follows:
@@ -53,4 +51,6 @@ Methodology
 
 3.  Random Forest
 
-The Goal of the models is not only seeking for accuracy but also interpretability. Visualization tools such as confusion matrix, ROC curve, and feature importance plot will be deployed in the project to ensure the models are understandable and reproducible. At the end of this project, the model selection will be based on not only numerical metrics such as accuracy or loss but also visualized metrics such as feature importance plot and ROC curve to ensure interpretability, acceptable model complexity, and preciseness.
+Except the logistic regression, each model will be tuned to make sure there is no overfitting.
+
+The presentation of the models is not only seeking for accuracy but also interpretability. Visualization tools such as confusion matrix, ROC curve, and feature importance plot will be deployed in the project to ensure the models are understandable and reproducible. At the end of this project, the model selection will be based on not only numerical metrics such as accuracy or loss but also visualized metrics such as feature importance plot and ROC curve to ensure interpretability, acceptable model complexity, and preciseness.
