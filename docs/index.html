@@ -139,13 +139,14 @@
 <ol start="3" style="list-style-type: decimal">
 <li>Methodology</li>
 </ol>
+<p>Various classification methods will be deployed in this projects including logistic regression, decision tree, and random forest. The introduction of each model are shown as follow:</p>
 <p>3.1 Logistic regression</p>
 <p>Logistic regression is a linear classification model where the log odd is predicted by a linear function with the features. Feature selection according to importance and conduct hypothesis test on coefficient are necessary as there might be feature which has minor effect on the labels.</p>
 <p>3.2 Decision Tree</p>
 <p>Decision tree will build a model where the nodes splits by calculating the cutoff with minimum the gini index, and the tree stops generating at gini index reaches 0 at each nodes. After the tree is built, we may access it to make classification predictions. Even if overfitting is likely to happen, we may address this by prune the tree.</p>
 <p>3.3 Random Forest</p>
 <p>Random forest is a model where the classification decision is made according to most common decision tree result in a number of random generated decision trees. This model is also likely to have overfitting. Hyperparameter tuning will be deployed to ensure there is no overfitting.</p>
-<p>After the models are built, the optimal threshhold will be selected for each model according to context such as high specificity or high sensitivity.</p>
+<p>After the models are built, the optimal threshhold will be selected for each model according to context requirement such as high specificity or high sensitivity.</p>
 <p>The evaluation of the models is not only seeking for accuracy but also interpretability. Visualization tools such as confusion matrix, ROC curve, and feature importance plot will be deployed in the project to ensure the models are understandable and reproducible. At the end of this project, the model selection will be based on not only numerical metrics such as accuracy or loss but also visualized metrics such as feature importance plot and ROC curve to ensure interpretability, acceptable model complexity, and preciseness.</p>
 
 </div>

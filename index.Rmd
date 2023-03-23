@@ -45,6 +45,8 @@ Generate a predictive model where we get specific information of a client and id
 
 3.  Methodology
 
+Various classification methods will be deployed in this projects including logistic regression, decision tree, and random forest. The introduction of each model are shown as follow:
+
 3.1 Logistic regression
 
 Logistic regression is a linear classification model where the log odd is predicted by a linear function with the features. Feature selection according to importance and conduct hypothesis test on coefficient are necessary as there might be feature which has minor effect on the labels.
@@ -57,6 +59,6 @@ Decision tree will build a model where the nodes splits by calculating the cutof
 
 Random forest is a model where the classification decision is made according to most common decision tree result in a number of random generated decision trees. This model is also likely to have overfitting. Hyperparameter tuning will be deployed to ensure there is no overfitting.
 
-After the models are built, the optimal threshhold will be selected for each model according to context such as high specificity or high sensitivity.
+After the models are built, the optimal threshhold will be selected for each model according to context requirement such as high specificity or high sensitivity.
 
 The evaluation of the models is not only seeking for accuracy but also interpretability. Visualization tools such as confusion matrix, ROC curve, and feature importance plot will be deployed in the project to ensure the models are understandable and reproducible. At the end of this project, the model selection will be based on not only numerical metrics such as accuracy or loss but also visualized metrics such as feature importance plot and ROC curve to ensure interpretability, acceptable model complexity, and preciseness.
