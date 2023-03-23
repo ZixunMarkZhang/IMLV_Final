@@ -47,7 +47,7 @@ Methodology
 
 1.  Logistic regression
 
-    Logistic regression is a linear classification model where the log odd is predicted by a linear function with the features. TFeature selection according to importance as there might be feature which has minor effect on the labels.
+    Logistic regression is a linear classification model where the log odd is predicted by a linear function with the features. Feature selection according to importance and conduct hypothesis test on coefficient are necessary as there might be feature which has minor effect on the labels.
 
 2.  Decision Tree
 
