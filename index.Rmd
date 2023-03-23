@@ -47,10 +47,16 @@ Methodology
 
 1.  Logistic regression
 
+    Logistic regression is a linear classification model where the log odd is predicted by a linear function with the features. TFeature selection according to importance as there might be feature which has minor effect on the labels.
+
 2.  Decision Tree
+
+    Decision tree will build a model where the nodes splits by calculating the cutoff with minimum the gini index, and the tree stops generating at gini index reaches 0 at each nodes. After the tree is built, we may access it to make classification predictions. Even if overfitting is likely to happen, we may address this by prune the tree.
 
 3.  Random Forest
 
-Except the logistic regression, each model will be tuned to make sure there is no overfitting.
+    Random forest is a model where the classification decision is made according to most common decision tree result in a number of random generated decision trees. This model is also likely to have overfitting. Hyperparameter tuning will be deployed to ensure there is no overfitting.
+
+After the models are built, the optimal threshhold will be selected for each model according to context such as high specificity or high sensitivity.
 
 The presentation of the models is not only seeking for accuracy but also interpretability. Visualization tools such as confusion matrix, ROC curve, and feature importance plot will be deployed in the project to ensure the models are understandable and reproducible. At the end of this project, the model selection will be based on not only numerical metrics such as accuracy or loss but also visualized metrics such as feature importance plot and ROC curve to ensure interpretability, acceptable model complexity, and preciseness.
