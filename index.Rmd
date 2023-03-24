@@ -9,7 +9,7 @@ site: bookdown::bookdown_site
 
 1.  Data
 
-The data set in this project is the Bank Market Data Set from UC Irvine Machine Learning Repository. It contains the costumer persona of bank client. The feature contains as follows:
+The data set in this project is the [Bank Marketing Data Set](https://archive.ics.uci.edu/ml/datasets/Bank+Marketing) from UC Irvine Machine Learning Repository. It contains the costumer persona of bank client. The feature contains as follows:
 
 1 - age (numeric)\
 2 - job : type of job (categorical: 'admin.','blue-collar','entrepreneur','housemaid','management','retired','self-employed','services','student','technician','unemployed','unknown')\
