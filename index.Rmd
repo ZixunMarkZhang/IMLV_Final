@@ -9,7 +9,7 @@ site: bookdown::bookdown_site
 
 1.  Data
 
-The data set in this project is the [Bank Marketing Data Set](https://archive.ics.uci.edu/ml/datasets/Bank+Marketing) from UC Irvine Machine Learning Repository. It contains the costumer persona of bank client. The feature contains as follows:
+The data set in this project is the [Bank Marketing Data Set](https://archive.ics.uci.edu/ml/datasets/Bank+Marketing) from UC Irvine Machine Learning Repository. It contains the costumer of bank client. The feature contains as follows:
 
 1 - age (numeric)\
 2 - job : type of job (categorical: 'admin.','blue-collar','entrepreneur','housemaid','management','retired','self-employed','services','student','technician','unemployed','unknown')\
@@ -35,13 +35,13 @@ The data set in this project is the [Bank Marketing Data Set](https://archive.ic
 19 - euribor3m: euribor 3 month rate - daily indicator (numeric)\
 20 - nr.employed: number of employees - quarterly indicator (numeric)
 
-The label of the data set is whether the customer subscribed a term deposit.
+The label of this data set to predict is a binary variable whether the customer subscribed a term deposit.
 
-The data will be preprocessed at the beginning of the project. The categorical data will be encoded by one hot encoder. The numerical data will be normalized if it significantly different mean and standard deviation.
+The features will be preprocessed at the beginning of the project. The categorical data will be encoded by one hot encoder. The numerical data will be normalized if it significantly different mean and standard deviation.
 
 2.  Modeling Goal
 
-Generate a predictive model where we get specific information of a client and identify if the client subscribed a term deposit. In real world context, this helps the banks to identify the potential client of term deposit service when they utilize the model on customer persona.
+Generate a predictive model by which we get specific information of a client and predict if the client subscribed a term deposit. In real world context, this helps the banks to identify the potential client of term deposit service when they utilize the model on customer information.
 
 3.  Methodology
 
@@ -59,6 +59,10 @@ Decision tree will build a model where the nodes splits by calculating the cutof
 
 Random forest is a model where the classification decision is made according to most common decision tree result in a number of random generated decision trees. This model is also likely to have overfitting. Hyperparameter tuning will be deployed to ensure there is no overfitting.
 
-After the models are built, the optimal threshhold will be selected for each model according to context requirement such as high specificity or high sensitivity.
+After the models are built, the optimal thresholds will be selected for each model according to context requirement such as high specificity or high sensitivity.
 
 The evaluation of the models is not only seeking for accuracy but also interpretability. Visualization tools such as confusion matrix, ROC curve, and feature importance plot will be deployed in the project to ensure the models are understandable and reproducible. At the end of this project, the model selection will be based on not only numerical metrics such as accuracy or loss but also visualized metrics such as feature importance plot and ROC curve to ensure interpretability, acceptable model complexity, and preciseness.
+
+Citation
+
+1.  [Moro et al., 2014] S. Moro, P. Cortez and P. Rita. A Data-Driven Approach to Predict the Success of Bank Telemarketing. Decision Support Systems, Elsevier, 62:22-31, June 2014, <https://archive.ics.uci.edu/ml/datasets/Bank+Marketing>
