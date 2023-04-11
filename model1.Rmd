@@ -1,22 +1,48 @@
 # [Logistic Regression]
 ```{r}
 #data cleaning
-bank <- read.csv("bank.csv", sep=";")
+bank <- read.csv("bank-additional-full.csv", sep=";")
+bank = subset(bank, select = -c(month,day_of_week,duration) )
+bank<-subset(bank, (job!='unknown') & (marital!='unknown') & 
+               (education!='unknown')& (default!='unknown') & 
+               (housing!='unknown') & (loan!='unknown'))
 bank$y = (bank$y=='yes')
+library(caret)
+
+dummy <- dummyVars(" ~ .", data=subset(bank, select = -c(y)))
+df <- data.frame(predict(dummy, newdata = subset(bank, select = -c(y)))) 
+df$y = bank$y
 set.seed(5293)
-n <- nrow(bank)
+n <- nrow(df)
 train <- sample(n, .8*n)
-train_dat <- bank[train, ]
-test_dat<- bank[-train,]
+train_dat <- df[train, ]
+test_dat<- df[-train,]
 ```
 
 ```{r}
 #build Logistic regression model
 fullmod<-glm(y~.,data=train_dat,family=binomial(link = 'logit'))
+LRpred = predict(fullmod,test_dat,type = 'response')
 ```
 
 ```{r}
-LRpred = predict(fullmod,test_dat,type = 'response')
+library(caret)
+library(reshape2)
+library(tibble)
+library(ggplot2)
+importance = fullmod$coefficients
+importance = melt(t(importance))
+colnames(importance) = c('var1','var','value')
+p<-ggplot(data=importance, aes(x=value, y=var)) +
+  geom_bar(stat="identity")
+```
+    After the logistic regression models are built, we may access the feature importance by accessing the shapley value of each 
+```{r}
+
+```
+
+
+```{r}
 get_rates <- function(threshold, actual, response) {
   predicted <- ifelse(response < threshold, 0, 1)
   
@@ -33,38 +59,14 @@ get_rates <- function(threshold, actual, response) {
 }
 
 
-df <- map_df(seq(0, 1, .01), get_rates, test_dat$y==1, LRpred)
-df <- df |> 
+rocdf <- map_df(seq(0, 1, .01), get_rates, test_dat$y==1, LRpred)
+rocdf <- rocdf |> 
   mutate(label = ifelse(threshold %in% seq(0, 1, .01),
                         threshold, NA))
 library(ggrepel)
-g <- ggplot(df, aes(x = fpr, y = tpr, label = label)) +
+g <- ggplot(rocdf, aes(x = fpr, y = tpr, label = label)) +
   geom_point() +
   geom_path() +
   geom_label_repel(color = "blue", size = 2)
 plotly::ggplotly(g)
 ```
-
-```{r}
-library(fastshap)
-library(tidyverse)
-pred <- function(model, newdata) {
-  predict(model, newdata = newdata, type = "terms")
-}
-shap_values <- fastshap::explain(
-  fullmod, 
-  X = train_dat,           
-  feature_names = colnames(train_dat |> dplyr::select(-y)),
-  pred_wrapper = pred, 
-  nsim = 5,
-  newdata = test_dat
-)
-library(ggplot2)
-library(reshape2)
-ggplot(melt(shap_values),aes(value, reorder(variable, value, FUN = median)))+
-  geom_boxplot()
-```
-```{r}
-x = predict(fullmod,test_dat,type = 'terms')
-```
-
