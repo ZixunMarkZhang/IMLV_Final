@@ -1,1 +1,70 @@
-# [Model 1]
+# [Logistic Regression]
+```{r}
+#data cleaning
+bank <- read.csv("bank.csv", sep=";")
+bank$y = (bank$y=='yes')
+set.seed(5293)
+n <- nrow(bank)
+train <- sample(n, .8*n)
+train_dat <- bank[train, ]
+test_dat<- bank[-train,]
+```
+
+```{r}
+#build Logistic regression model
+fullmod<-glm(y~.,data=train_dat,family=binomial(link = 'logit'))
+```
+
+```{r}
+LRpred = predict(fullmod,test_dat,type = 'response')
+get_rates <- function(threshold, actual, response) {
+  predicted <- ifelse(response < threshold, 0, 1)
+  
+  TP <- sum(actual == 1 & predicted == 1)
+  FP <- sum(actual == 0 & predicted == 1)
+  TN <- sum(actual == 0 & predicted == 0)
+  FN <- sum(actual == 1 & predicted == 0)
+  
+  tpr <- TP/(TP + FN)
+  fpr <- FP/(TN + FP)  
+  
+  data.frame(threshold, tpr, fpr)
+  
+}
+
+
+df <- map_df(seq(0, 1, .01), get_rates, test_dat$y==1, LRpred)
+df <- df |> 
+  mutate(label = ifelse(threshold %in% seq(0, 1, .01),
+                        threshold, NA))
+library(ggrepel)
+g <- ggplot(df, aes(x = fpr, y = tpr, label = label)) +
+  geom_point() +
+  geom_path() +
+  geom_label_repel(color = "blue", size = 2)
+plotly::ggplotly(g)
+```
+
+```{r}
+library(fastshap)
+library(tidyverse)
+pred <- function(model, newdata) {
+  predict(model, newdata = newdata, type = "terms")
+}
+shap_values <- fastshap::explain(
+  fullmod, 
+  X = train_dat,           
+  feature_names = colnames(train_dat |> dplyr::select(-y)),
+  pred_wrapper = pred, 
+  nsim = 5,
+  newdata = test_dat
+)
+library(ggplot2)
+library(reshape2)
+ggplot(melt(shap_values),aes(value, reorder(variable, value, FUN = median)))+
+  geom_boxplot()
+```
+```{r}
+x = predict(fullmod,test_dat,type = 'terms')
+```
+
