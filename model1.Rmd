@@ -49,18 +49,16 @@ importance = melt(t(na.omit(fullmod$coefficients[-1])))
 colnames(importance) = c('var1','var','coefficient')
 ggplot(data=importance, aes(y=reorder(var,abs(coefficient)), x=coefficient)) +
   geom_bar(stat="identity")
-
 ```
     After the logistic regression models are built, we may access the feature importance by visualize the coefficient. The plot above shows the magnitude of significance for each variable with a descending order of their absolute value. It is obvious that the default value has the largest influence on the predicted probability. However, that's mostly because of the default yes record in the data set according to the EDA part. Despite the default values, whether the person is illiterate, employment variable rate, whether the contacting is via telephone, and the outcome of previous campaign has remarkable impact on the prediction. However, the coefficient of default is too large that we actually can not assess the exact coefficient of variables by visualization; hence we may eliminate the default from the graph and get a new bar plot as follows.
 
 ```{r}
 importance1 = subset(importance,var!='defaultyes')
 ggplot(data=importance1, aes(y=reorder(var,abs(coefficient)), x=coefficient)) +
-  geom_bar(stat="identity")+
-  geom_text(aes(label = round(coefficient,2)))
+  geom_bar(stat="identity")
 ```
 From this plot, we may find that there are some variables that creates minor impact in our full regression model. Specifically speaking, in this plot, 
-housingyes,, jobhousemaid, previous, jobself.employed, jobmanagement,loanyes, jobtechnician, and age have coefficient under 0.05. We will examine a reduced model without these listed variable in the following analysis.
+housingyes,, jobhousemaid, previous, jobself.employed, jobmanagement,loanyes, jobtechnician, and age have relatively small coefficient values. We will examine a reduced model without these listed variable in the following analysis.
 ```{r}
 get_rates <- function(threshold, actual, response) {
   predicted <- ifelse(response < threshold, 0, 1)
