@@ -1,5 +1,5 @@
 proposal
-model-1
+logistic-regression
 model-2
 model-3
 reflections
