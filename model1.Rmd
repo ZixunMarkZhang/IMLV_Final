@@ -1,22 +1,36 @@
 # [Logistic Regression]
 ```{r}
 #data cleaning
-bank <- read.csv("bank-additional-full.csv", sep=";")
-bank = subset(bank, select = -c(month,day_of_week,duration) )
-bank<-subset(bank, (job!='unknown') & (marital!='unknown') & 
+bankfull <- read.csv("bank-additional-full.csv", sep=";")
+#delete month and dat of week as they are irrelevant. Eliminate duration as it has extremely high correlation with target
+bankfull = subset(bankfull, select = -c(month,day_of_week,duration) )
+#delete all rows with unknown values
+bankfull<-subset(bankfull, (job!='unknown') & (marital!='unknown') & 
                (education!='unknown')& (default!='unknown') & 
                (housing!='unknown') & (loan!='unknown'))
-bank$y = (bank$y=='yes')
+#keep binary variables
+bank = subset(bankfull,select = c(marital, default, housing, loan,contact))
+#process numerical values
+bank$age = scale(bankfull$age)
+bank$campaign = scale(bankfull$campaign)
+bank$pdays =scale(bankfull$pdays)
+bank$previous =scale(bankfull$previous)
+bank$emp.var.rate =scale(bankfull$emp.var.rate)
+bank$cons.price.idx =scale(bankfull$cons.price.idx)
+bank$cons.conf.idx =scale(bankfull$cons.conf.idx)
+bank$euribor3m =scale(bankfull$euribor3m)
+bank$nr.employed =scale(bankfull$nr.employed)
+bank$y = (bankfull$y=='yes')
 library(caret)
 
-dummy <- dummyVars(" ~ .", data=subset(bank, select = -c(y)))
-df <- data.frame(predict(dummy, newdata = subset(bank, select = -c(y)))) 
-df$y = bank$y
+dummy <- dummyVars(" ~ .", subset(bankfull, select = c(education,job,poutcome)))
+df <- data.frame(predict(dummy, newdata = subset(bankfull, select = c(education,job,poutcome)))) 
+bank = cbind(df,bank)
 set.seed(5293)
 n <- nrow(df)
 train <- sample(n, .8*n)
-train_dat <- df[train, ]
-test_dat<- df[-train,]
+train_dat <-bank[train, ]
+test_dat<- bank[-train,]
 ```
 
 ```{r}
@@ -30,18 +44,23 @@ library(caret)
 library(reshape2)
 library(tibble)
 library(ggplot2)
-importance = fullmod$coefficients
-importance = melt(t(importance))
-colnames(importance) = c('var1','var','value')
-p<-ggplot(data=importance, aes(x=value, y=var)) +
+library(tidyverse)
+importance = melt(t(na.omit(fullmod$coefficients[-1])))
+colnames(importance) = c('var1','var','coefficient')
+ggplot(data=importance, aes(y=reorder(var,abs(coefficient)), x=coefficient)) +
   geom_bar(stat="identity")
+
 ```
-    After the logistic regression models are built, we may access the feature importance by accessing the shapley value of each 
+    After the logistic regression models are built, we may access the feature importance by visualize the coefficient. The plot above shows the magnitude of significance for each variable with a descending order of their absolute value. It is obvious that the default value has the largest influence on the predicted probability. However, that's mostly because of the default yes record in the data set according to the EDA part. Despite the default values, whether the person is illiterate, employment variable rate, whether the contacting is via telephone, and the outcome of previous campaign has remarkable impact on the prediction. However, the coefficient of default is too large that we actually can not assess the exact coefficient of variables by visualization; hence we may eliminate the default from the graph and get a new bar plot as follows.
+
 ```{r}
-
+importance1 = subset(importance,var!='defaultyes')
+ggplot(data=importance1, aes(y=reorder(var,abs(coefficient)), x=coefficient)) +
+  geom_bar(stat="identity")+
+  geom_text(aes(label = round(coefficient,2)))
 ```
-
-
+From this plot, we may find that there are some variables that creates minor impact in our full regression model. Specifically speaking, in this plot, 
+housingyes,, jobhousemaid, previous, jobself.employed, jobmanagement,loanyes, jobtechnician, and age have coefficient under 0.05. We will examine a reduced model without these listed variable in the following analysis.
 ```{r}
 get_rates <- function(threshold, actual, response) {
   predicted <- ifelse(response < threshold, 0, 1)
