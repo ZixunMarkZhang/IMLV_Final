@@ -10,19 +10,20 @@ bankfull <- read.csv("bank-additional-full.csv", sep=";")
 #delete month and data of week as they are irrelevant. Eliminate duration as it has extremely high correlation with target
 bankfull = subset(bankfull, select = -c(month,day_of_week,duration) )
 #delete all rows with unknown values
-bankfull<-subset(bankfull, (job!='unknown') & (marital!='unknown') & (education!='unknown')& (default!='unknown')& (housing!='unknown')&(loan!='unknown'))
+bankfull<-subset(bankfull, (job!='unknown') & (marital!='unknown') & (education!='unknown')&
+                   (default!='unknown')& (housing!='unknown')&(loan!='unknown'))
 #keep binary variables
 bank = subset(bankfull,select = c(marital, default, housing, loan,contact))
 #process numerical values
-bank$age = scale(bankfull$age)
-bank$campaign = scale(bankfull$campaign)
-bank$pdays =scale(bankfull$pdays)
-bank$previous =scale(bankfull$previous)
-bank$emp.var.rate =scale(bankfull$emp.var.rate)
-bank$cons.price.idx =scale(bankfull$cons.price.idx)
-bank$cons.conf.idx =scale(bankfull$cons.conf.idx)
-bank$euribor3m =scale(bankfull$euribor3m)
-bank$nr.employed =scale(bankfull$nr.employed)
+bank$age = c(scale(bankfull$age))
+bank$campaign = c(scale(bankfull$campaign))
+bank$pdays =c(scale(bankfull$pdays))
+bank$previous =c(scale(bankfull$previous))
+bank$emp.var.rate =c(scale(bankfull$emp.var.rate))
+bank$cons.price.idx =c(scale(bankfull$cons.price.idx))
+bank$cons.conf.idx =c(scale(bankfull$cons.conf.idx))
+bank$euribor3m =c(scale(bankfull$euribor3m))
+bank$nr.employed =c(scale(bankfull$nr.employed))
 bank$y = (bankfull$y=='yes')
 library(caret)
 
