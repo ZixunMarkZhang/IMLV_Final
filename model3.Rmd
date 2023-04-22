@@ -1,1 +1,20 @@
-# [Model 3]
+# [Random Forest]
+```{r}
+library(randomForest)
+RFmod <- randomForest(y ~ ., data = train_dat)
+pred <- function(model, newdata) {
+  predict(model, newdata = newdata, type = "prob")[, 2]
+}
+
+shap_values <- fastshap::explain(
+  RFmod, 
+  X = train_dat,           
+  feature_names = colnames(train_dat |> dplyr::select(-y)),
+  pred_wrapper = pred, 
+  nsim = 5,
+  newdata = test_dat
+)
+ggplot(melt(shap_values),aes(value, variable))+
+  geom_boxplot()
+```
+

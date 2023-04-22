@@ -24,7 +24,7 @@ bank$cons.price.idx =c(scale(bankfull$cons.price.idx))
 bank$cons.conf.idx =c(scale(bankfull$cons.conf.idx))
 bank$euribor3m =c(scale(bankfull$euribor3m))
 bank$nr.employed =c(scale(bankfull$nr.employed))
-bank$y = (bankfull$y=='yes')
+bank$y = as.factor((bankfull$y=='yes'))
 library(caret)
 
 dummy <- dummyVars(" ~ .", subset(bankfull, select = c(education,job,poutcome)))

@@ -1,6 +1,5 @@
 proposal
-EDA
 logistic-regression
-model-2
-model-3
+decision-tree
+random-forest
 reflections

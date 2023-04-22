@@ -1,1 +1,24 @@
-# [Model 2]
+# [Decision Tree]
+```{r}
+library(rpart)
+DTmod <- rpart(y ~ ., data = train_dat,cp=0,method='class')
+pred <- function(model, newdata) {
+  predict(model, newdata = newdata, type = "prob")[, 2]
+}
+
+
+shap_values <- fastshap::explain(
+  DTmod, 
+  X = train_dat,           
+  feature_names = colnames(train_dat |> dplyr::select(-y)),
+  pred_wrapper = pred, 
+  nsim = 5,
+  newdata = test_dat
+)
+
+library(ggplot2)
+library(reshape2)
+ggplot(melt(shap_values),aes(value, variable))+
+  geom_boxplot()
+```
+
