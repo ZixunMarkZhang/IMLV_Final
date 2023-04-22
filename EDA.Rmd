@@ -1,5 +1,5 @@
 ---
-title: "Data Wrangling and EDA"
+title: "EDA"
 output: html_document
 date: "2023-04-18"
 ---
@@ -7,12 +7,10 @@ date: "2023-04-18"
 ```{r}
 #data cleaning
 bankfull <- read.csv("bank-additional-full.csv", sep=";")
-#delete month and dat of week as they are irrelevant. Eliminate duration as it has extremely high correlation with target
+#delete month and data of week as they are irrelevant. Eliminate duration as it has extremely high correlation with target
 bankfull = subset(bankfull, select = -c(month,day_of_week,duration) )
 #delete all rows with unknown values
-bankfull<-subset(bankfull, (job!='unknown') & (marital!='unknown') & 
-               (education!='unknown')& (default!='unknown') & 
-               (housing!='unknown') & (loan!='unknown'))
+bankfull<-subset(bankfull, (job!='unknown') & (marital!='unknown') & (education!='unknown')& (default!='unknown')& (housing!='unknown')&(loan!='unknown'))
 #keep binary variables
 bank = subset(bankfull,select = c(marital, default, housing, loan,contact))
 #process numerical values
@@ -37,5 +35,3 @@ train <- sample(n, .8*n)
 train_dat <-bank[train, ]
 test_dat<- bank[-train,]
 ```
-```
-
