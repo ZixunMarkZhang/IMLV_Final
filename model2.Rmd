@@ -5,7 +5,16 @@ DTmod <- rpart(y ~ ., data = train_dat,cp=0,method='class')
 pred <- function(model, newdata) {
   predict(model, newdata = newdata, type = "prob")[, 2]
 }
+plotcp(DTmod)
+```
+```{r}
+DTmod <- rpart(y ~ ., data = train_dat,cp=0.0012,method='class')
 
+DTpred = predict(DTmod,test_dat)[,2]
+```
+
+
+```{r}
 
 shap_values <- fastshap::explain(
   DTmod, 
@@ -18,7 +27,36 @@ shap_values <- fastshap::explain(
 
 library(ggplot2)
 library(reshape2)
-ggplot(melt(shap_values),aes(value, variable))+
+ggplot(melt(shap_values),aes(value, reorder(variable, value, FUN = median)))+
   geom_boxplot()
 ```
 
+
+```{r}
+get_rates <- function(threshold, actual, response) {
+  predicted <- ifelse(response < threshold, 0, 1)
+  
+  TP <- sum(actual == 1 & predicted == 1)
+  FP <- sum(actual == 0 & predicted == 1)
+  TN <- sum(actual == 0 & predicted == 0)
+  FN <- sum(actual == 1 & predicted == 0)
+  
+  tpr <- TP/(TP + FN)
+  fpr <- FP/(TN + FP)  
+  
+  data.frame(threshold, tpr, fpr)
+  
+}
+
+
+rocdf <- map_df(seq(0, 1, .01), get_rates, test_dat$y==TRUE, DTpred)
+rocdf <- rocdf |> 
+  mutate(label = ifelse(threshold %in% seq(0, 1, .01),
+                        threshold, NA))
+library(ggrepel)
+g <- ggplot(rocdf, aes(x = fpr, y = tpr, label = label)) +
+  geom_point() +
+  geom_path() +
+  geom_label_repel(color = "blue", size = 2)
+plotly::ggplotly(g)
+```

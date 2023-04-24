@@ -5,7 +5,10 @@ RFmod <- randomForest(y ~ ., data = train_dat)
 pred <- function(model, newdata) {
   predict(model, newdata = newdata, type = "prob")[, 2]
 }
+RFpred = predict(RFmod,test_dat,type = 'prob')[,2]
+```
 
+```{r}
 shap_values <- fastshap::explain(
   RFmod, 
   X = train_dat,           
@@ -18,3 +21,32 @@ ggplot(melt(shap_values),aes(value, variable))+
   geom_boxplot()
 ```
 
+
+```{r}
+get_rates <- function(threshold, actual, response) {
+  predicted <- ifelse(response < threshold, 0, 1)
+  
+  TP <- sum(actual == 1 & predicted == 1)
+  FP <- sum(actual == 0 & predicted == 1)
+  TN <- sum(actual == 0 & predicted == 0)
+  FN <- sum(actual == 1 & predicted == 0)
+  
+  tpr <- TP/(TP + FN)
+  fpr <- FP/(TN + FP)  
+  
+  data.frame(threshold, tpr, fpr)
+  
+}
+
+
+rocdf <- map_df(seq(0, 1, .01), get_rates, test_dat$y==TRUE, RFpred)
+rocdf <- rocdf |> 
+  mutate(label = ifelse(threshold %in% seq(0, 1, .01),
+                        threshold, NA))
+library(ggrepel)
+g <- ggplot(rocdf, aes(x = fpr, y = tpr, label = label)) +
+  geom_point() +
+  geom_path() +
+  geom_label_repel(color = "blue", size = 2)
+plotly::ggplotly(g)
+```
