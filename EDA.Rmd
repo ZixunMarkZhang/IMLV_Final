@@ -3,7 +3,7 @@ title: "EDA"
 output: html_document
 date: "2023-04-18"
 ---
-
+#EDA
 ```{r}
 #data cleaning
 bankfull <- read.csv("bank-additional-full.csv", sep=";")
