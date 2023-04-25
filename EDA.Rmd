@@ -1,10 +1,6 @@
-#---
-#title: "EDA"
-#output: html_document
-#date: "2023-04-18"
-#---
-#EDA
+#[EDA]
 ```{r}
+library(ggplot2)
 #data cleaning
 bankfull <- read.csv("bank-additional-full.csv", sep=";")
 #delete month and data of week as they are irrelevant. Eliminate duration as it has extremely high correlation with target
@@ -12,6 +8,10 @@ bankfull = subset(bankfull, select = -c(month,day_of_week,duration) )
 #delete all rows with unknown values
 bankfull<-subset(bankfull, (job!='unknown') & (marital!='unknown') & (education!='unknown')&
                    (default!='unknown')& (housing!='unknown')&(loan!='unknown'))
+ggplot(bankfull, aes(x = y)) +
+  geom_bar()
+```
+```{r}
 #keep binary variables
 bank = subset(bankfull,select = c(marital, default, housing, loan,contact))
 #process numerical values
