@@ -11,6 +11,115 @@ bankfull<-subset(bankfull, (job!='unknown') & (marital!='unknown') & (education!
 ggplot(bankfull, aes(x = y)) +
   geom_bar()
 ```
+1 - age (numeric)\
+```{r}
+ggplot(bankfull,aes(x=scale(age),fill=y))+
+  geom_histogram()+
+  scale_fill_brewer(palette = 'Set3')
+```
+
+2 - job : type of job (categorical: 'admin.','blue-collar','entrepreneur','housemaid','management','retired','self-employed','services','student','technician','unemployed','unknown')\
+```{r}
+ggplot(data = bankfull, aes(y = job, fill = y)) +
+  geom_bar(position="dodge")+
+  scale_fill_brewer(palette = 'Set3')
+```
+
+3 - marital : marital status (categorical: 'divorced','married','single','unknown'; note: 'divorced' means divorced or widowed)\
+```{r}
+ggplot(data = bankfull, aes(y = marital, fill = y)) +
+  geom_bar(position="dodge")+
+  scale_fill_brewer(palette = 'Set3')
+```
+
+4 - education (categorical: 'basic.4y','basic.6y','basic.9y','high.school','illiterate','professional.course','university.degree','unknown')\
+```{r}
+ggplot(data = bankfull, aes(y = education, fill = y)) +
+  geom_bar(position="dodge")+
+  scale_fill_brewer(palette = 'Set3')
+```
+
+5 - default: has credit in default? (categorical: 'no','yes','unknown')\
+```{r}
+ggplot(data = bankfull, aes(y = default, fill = y)) +
+  geom_bar(position="dodge")+
+  scale_fill_brewer(palette = 'Set3')
+```
+
+6 - housing: has housing loan? (categorical: 'no','yes','unknown')\
+```{r}
+ggplot(data = bankfull, aes(y = housing, fill = y)) +
+  geom_bar(position="dodge")+
+  scale_fill_brewer(palette = 'Set3')
+```
+7 - loan: has personal loan? (categorical: 'no','yes','unknown')\
+```{r}
+ggplot(data = bankfull, aes(y = loan, fill = y)) +
+  geom_bar(position="dodge")+
+  scale_fill_brewer(palette = 'Set3')
+```
+\# related with the last contact of the current campaign:\
+8 - contact: contact communication type (categorical: 'cellular','telephone')\
+```{r}
+ggplot(data = bankfull, aes(y = contact, fill = y)) +
+  geom_bar(position="dodge")+
+  scale_fill_brewer(palette = 'Set3')
+```
+\# other attributes:\
+12 - campaign: number of contacts performed during this campaign and for this client (numeric, includes last contact)\
+```{r}
+ggplot(bankfull,aes(x=scale(campaign),fill=y))+
+  geom_histogram()+
+  scale_fill_brewer(palette = 'Set3')
+```
+13 - pdays: number of days that passed by after the client was last contacted from a previous campaign (numeric; 999 means client was not previously contacted)\
+```{r}
+ggplot(subset(bankfull,pdays!=999),aes(x=scale(pdays),fill=y))+
+  geom_histogram()+
+  scale_fill_brewer(palette = 'Set3')
+```
+14 - previous: number of contacts performed before this campaign and for this client (numeric)\
+```{r}
+ggplot(bankfull,aes(x=scale(age),fill=y))+
+  geom_histogram()+
+  scale_fill_brewer(palette = 'Set3')
+```
+15 - poutcome: outcome of the previous marketing campaign (categorical: 'failure','nonexistent','success')\
+```{r}
+ggplot(data = bankfull, aes(y = poutcome, fill = y)) +
+  geom_bar(position="dodge")+
+  scale_fill_brewer(palette = 'Set3')
+```
+\# social and economic context attributes\
+16 - emp.var.rate: employment variation rate - quarterly indicator (numeric)\
+```{r}
+ggplot(bankfull,aes(x=scale(emp.var.rate),fill=y))+
+  geom_histogram()+
+  scale_fill_brewer(palette = 'Set3')
+```
+17 - cons.price.idx: consumer price index - monthly indicator (numeric)\
+```{r}
+ggplot(bankfull,aes(x=scale(cons.price.idx),fill=y))+
+  geom_histogram()+
+  scale_fill_brewer(palette = 'Set3')
+```
+18 - cons.conf.idx: consumer confidence index - monthly indicator (numeric)\
+```{r}
+ggplot(bankfull,aes(x=scale(cons.conf.idx),fill=y))+
+  geom_histogram()+
+  scale_fill_brewer(palette = 'Set3')
+```
+19 - euribor3m: euribor 3 month rate - daily indicator (numeric)\
+```{r}
+ggplot(bankfull,aes(x=scale(euribor3m),fill=y))+
+  geom_histogram()+
+  scale_fill_brewer(palette = 'Set3')
+```
+20 - nr.employed: number of employees - quarterly indicator (numeric)
+```{r}
+ggplot(bankfull,aes(x=age,fill=y))+
+  geom_histogram()
+```
 ```{r}
 #keep binary variables
 bank = subset(bankfull,select = c(marital, default, housing, loan,contact))
