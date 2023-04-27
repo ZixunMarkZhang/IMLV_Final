@@ -12,14 +12,14 @@ ggplot(bankfull, aes(x = y)) +
   geom_bar()
 ```
 ```{r}
-numrical  = bank[,c('age','campaign','pdays','previous','emp.var.rate','cons.price.idx','cons.conf.idx','euribor3m','nr.employed')]
+numrical  = bankfull[,c('age','campaign','pdays','previous','emp.var.rate','cons.price.idx','cons.conf.idx','euribor3m','nr.employed')]
 res = cor(numrical)
 library(corrplot)
 corrplot(res, type = "upper", order = "hclust", 
          tl.col = "black", tl.srt = 45)
 ```
 ```{r}
-bankfull = subset(bankfull, select = -c(nr.employed,emp) )
+bankfull = subset(bankfull, select = -c(nr.employed,emp.var.rate) )
 ```
 
 1 - age (numeric)\
