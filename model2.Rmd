@@ -7,12 +7,18 @@ pred <- function(model, newdata) {
 }
 plotcp(DTmod)
 ```
+
+
 ```{r}
 DTmod <- rpart(y ~ ., data = train_dat,cp=0.002,method='class')
 
 DTpred = predict(DTmod,test_dat)[,2]
 ```
 
+```{r}
+library(rpart.plot)
+rpart.plot(DTmod)
+```
 
 ```{r}
 
@@ -42,10 +48,32 @@ g+ylab('prob')
 ```
 ```{r}
 library(pdp)
+pdp_hit_rf = partial(DTmod,pred.var = 'cons.conf.idx')
+g <- ggplot(pdp_hit_rf, aes(cons.conf.idx, yhat)) +
+  geom_line() +
+  geom_rug(data = train_dat, aes(cons.conf.idx), inherit.aes = FALSE, alpha = .5,
+  color = "red") +
+  theme_bw(16)
+g+ylab('prob')
+```
+
+```{r}
+library(pdp)
 pdp_hit_rf = partial(DTmod,pred.var = 'cons.price.idx')
 g <- ggplot(pdp_hit_rf, aes(cons.price.idx, yhat)) +
   geom_line() +
   geom_rug(data = train_dat, aes(cons.price.idx), inherit.aes = FALSE, alpha = .5,
+  color = "red") +
+  theme_bw(16)
+g+ylab('prob')
+```
+
+```{r}
+library(pdp)
+pdp_hit_rf = partial(DTmod,pred.var = 'euribor3m')
+g <- ggplot(pdp_hit_rf, aes(euribor3m, yhat)) +
+  geom_line() +
+  geom_rug(data = train_dat, aes(euribor3m), inherit.aes = FALSE, alpha = .5,
   color = "red") +
   theme_bw(16)
 g+ylab('prob')

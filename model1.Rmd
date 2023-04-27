@@ -51,7 +51,16 @@ g <- ggplot(pdp_hit_rf, aes(euribor3m, yhat)) +
   theme_bw(16)
 g+ylab('prob')
 ```
-   
+```{r warning=FALSE}
+library(pdp)
+pdp_hit_rf = partial(fullmod,pred.var = 'contact')
+g <- ggplot(pdp_hit_rf, aes(contact, yhat)) +
+  geom_bar(stat="identity") +
+  geom_rug(data = train_dat, aes(contact), inherit.aes = FALSE, alpha = .5,
+  color = "red") +
+  theme_bw(16)
+g+ylab('prob')
+```   
 
 ```{r}
 get_rates <- function(threshold, actual, response) {

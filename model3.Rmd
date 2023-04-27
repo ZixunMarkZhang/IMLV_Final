@@ -44,6 +44,17 @@ g+ylab('prob')
 ```
 
 ```{r}
+library(pdp)
+pdp_hit_rf = partial(RFmod,pred.var = 'cons.conf.idx')
+g <- ggplot(pdp_hit_rf, aes(cons.conf.idx, yhat)) +
+  geom_line() +
+  geom_rug(data = train_dat, aes(cons.conf.idx), inherit.aes = FALSE, alpha = .5,
+  color = "red") +
+  theme_bw(16)
+g+ylab('prob')
+```
+
+```{r}
 get_rates <- function(threshold, actual, response) {
   predicted <- ifelse(response < threshold, 0, 1)
   
