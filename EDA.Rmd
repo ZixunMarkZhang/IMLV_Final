@@ -11,6 +11,17 @@ bankfull<-subset(bankfull, (job!='unknown') & (marital!='unknown') & (education!
 ggplot(bankfull, aes(x = y)) +
   geom_bar()
 ```
+```{r}
+numrical  = bank[,c('age','campaign','pdays','previous','emp.var.rate','cons.price.idx','cons.conf.idx','euribor3m','nr.employed')]
+res = cor(numrical)
+library(corrplot)
+corrplot(res, type = "upper", order = "hclust", 
+         tl.col = "black", tl.srt = 45)
+```
+```{r}
+bankfull = subset(bankfull, select = -c(nr.employed,emp) )
+```
+
 1 - age (numeric)\
 ```{r}
 ggplot(bankfull,aes(x=scale(age),fill=y))+
@@ -91,12 +102,7 @@ ggplot(data = bankfull, aes(y = poutcome, fill = y)) +
   scale_fill_brewer(palette = 'Set3')
 ```
 \# social and economic context attributes\
-16 - emp.var.rate: employment variation rate - quarterly indicator (numeric)\
-```{r}
-ggplot(bankfull,aes(x=scale(emp.var.rate),fill=y))+
-  geom_histogram()+
-  scale_fill_brewer(palette = 'Set3')
-```
+
 17 - cons.price.idx: consumer price index - monthly indicator (numeric)\
 ```{r}
 ggplot(bankfull,aes(x=scale(cons.price.idx),fill=y))+
@@ -115,11 +121,10 @@ ggplot(bankfull,aes(x=scale(euribor3m),fill=y))+
   geom_histogram()+
   scale_fill_brewer(palette = 'Set3')
 ```
-20 - nr.employed: number of employees - quarterly indicator (numeric)
-```{r}
-ggplot(bankfull,aes(x=age,fill=y))+
-  geom_histogram()
-```
+
+
+
+
 ```{r}
 #keep binary variables
 bank = subset(bankfull,select = c(marital, default, housing, loan,contact))
@@ -128,11 +133,9 @@ bank$age = c(scale(bankfull$age))
 bank$campaign = c(scale(bankfull$campaign))
 bank$pdays =c(scale(bankfull$pdays))
 bank$previous =c(scale(bankfull$previous))
-bank$emp.var.rate =c(scale(bankfull$emp.var.rate))
 bank$cons.price.idx =c(scale(bankfull$cons.price.idx))
 bank$cons.conf.idx =c(scale(bankfull$cons.conf.idx))
 bank$euribor3m =c(scale(bankfull$euribor3m))
-bank$nr.employed =c(scale(bankfull$nr.employed))
 bank$y = as.factor((bankfull$y=='yes'))
 library(caret)
 
@@ -141,7 +144,7 @@ df <- data.frame(predict(dummy, newdata = subset(bankfull, select = c(education,
 bank = cbind(df,bank)
 set.seed(5293)
 n <- nrow(df)
-train <- sample(n, .8*n)
+train <- sample(n, .7*n)
 train_dat <-bank[train, ]
 test_dat<- bank[-train,]
 ```

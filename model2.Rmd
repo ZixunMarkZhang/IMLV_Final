@@ -8,7 +8,7 @@ pred <- function(model, newdata) {
 plotcp(DTmod)
 ```
 ```{r}
-DTmod <- rpart(y ~ ., data = train_dat,cp=0.0012,method='class')
+DTmod <- rpart(y ~ ., data = train_dat,cp=0.002,method='class')
 
 DTpred = predict(DTmod,test_dat)[,2]
 ```
