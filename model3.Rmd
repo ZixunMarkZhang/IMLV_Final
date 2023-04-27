@@ -21,6 +21,27 @@ ggplot(melt(shap_values),aes(value, variable))+
   geom_boxplot()
 ```
 
+```{r}
+library(pdp)
+pdp_hit_rf = partial(RFmod,pred.var = 'euribor3m')
+g <- ggplot(pdp_hit_rf, aes(euribor3m, yhat)) +
+  geom_line() +
+  geom_rug(data = train_dat, aes(euribor3m), inherit.aes = FALSE, alpha = .5,
+  color = "red") +
+  theme_bw(16)
+g+ylab('prob')
+```
+
+```{r}
+library(pdp)
+pdp_hit_rf = partial(RFmod,pred.var = 'cons.price.idx')
+g <- ggplot(pdp_hit_rf, aes(cons.price.idx, yhat)) +
+  geom_line() +
+  geom_rug(data = train_dat, aes(cons.price.idx), inherit.aes = FALSE, alpha = .5,
+  color = "red") +
+  theme_bw(16)
+g+ylab('prob')
+```
 
 ```{r}
 get_rates <- function(threshold, actual, response) {

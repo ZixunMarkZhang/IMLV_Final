@@ -29,6 +29,8 @@ shap_values <- fastshap::explain(
 ggplot(melt(shap_values),aes(value, reorder(variable, value, FUN = median)))+
   geom_boxplot()
 ```
+ After the logistic regression models are built, we may access the feature importance by visualize the coefficient. The bar plot above shows the magnitude of significance for each variable with a descending order of their absolute value. It is obvious that the default value has the largest influence on the predicted probability. However, that's mostly because of the default yes record in the data set according to the EDA part. Despite the default values, whether the person is illiterate, employment variable rate, whether the contacting is via telephone, and the outcome of previous campaign has remarkable impact on the prediction. However, the coefficient of default is too large that we actually can not assess the exact coefficient of variables by visualization; hence we may eliminate the default from the graph and get a new bar plot as follows.
+
 ```{r}
 library(pdp)
 pdp_hit_rf = partial(fullmod,pred.var = 'cons.price.idx')
@@ -39,8 +41,17 @@ g <- ggplot(pdp_hit_rf, aes(cons.price.idx, yhat)) +
   theme_bw(16)
 g+ylab('prob')
 ```
-
-    After the logistic regression models are built, we may access the feature importance by visualize the coefficient. The bar plot above shows the magnitude of significance for each variable with a descending order of their absolute value. It is obvious that the default value has the largest influence on the predicted probability. However, that's mostly because of the default yes record in the data set according to the EDA part. Despite the default values, whether the person is illiterate, employment variable rate, whether the contacting is via telephone, and the outcome of previous campaign has remarkable impact on the prediction. However, the coefficient of default is too large that we actually can not assess the exact coefficient of variables by visualization; hence we may eliminate the default from the graph and get a new bar plot as follows.
+```{r message=FALSE, warning=FALSE}
+library(pdp)
+pdp_hit_rf = partial(fullmod,pred.var = 'euribor3m')
+g <- ggplot(pdp_hit_rf, aes(euribor3m, yhat)) +
+  geom_line() +
+  geom_rug(data = train_dat, aes(euribor3m), inherit.aes = FALSE, alpha = .5,
+  color = "red") +
+  theme_bw(16)
+g+ylab('prob')
+```
+   
 
 ```{r}
 get_rates <- function(threshold, actual, response) {
