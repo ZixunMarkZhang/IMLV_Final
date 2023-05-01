@@ -2,7 +2,7 @@
 
 In this section, we will brief through the data by creating plots for all variables under y=yes and y=no and see if there is differences in distribution.
 
-```{r}
+```{r cache=TRUE}
 library(ggplot2)
 #data cleaning
 bankfull <- read.csv("bank-additional-full.csv", sep=";")
@@ -17,7 +17,7 @@ ggplot(bankfull, aes(x = y)) +
 
 The plot above is a bar plot showing the counts of the response variables y, defined by whether the person has term deposit. It is quite obvious that there are more cases with y equal to no than ones with y equal to yes. However, considering the number of cases included, we do not have to do any sampling or weight adjustment to the data.
 
-```{r}
+```{r cache=TRUE}
 numrical  = bankfull[,c('age','campaign','pdays','previous','emp.var.rate','cons.price.idx','cons.conf.idx','euribor3m','nr.employed')]
 res = cor(numrical)
 library(corrplot)
@@ -44,7 +44,7 @@ In the section below, we will take a look of each variable and examine if there 
 
 1 - age (numeric). After scaling the age variables, I plot a overlapped numerical histogram showing distribution of age for each y category as shown below. However, there is no obvious difference in pattern of two different categories.
 
-```{r}
+```{r cache=TRUE}
 ggplot(bank,aes(x=age,fill=y))+
   geom_histogram()+
   scale_fill_brewer(palette = 'Set3')
@@ -52,7 +52,7 @@ ggplot(bank,aes(x=age,fill=y))+
 
 2 - job : type of job (categorical: 'admin.', 'bluecollar', 'entrepreneur', 'housemaid', 'management', 'retired', 'self-employed', 'services', 'student', 'technician', 'unemployed', 'unknown'). The plot shown as follow indicates the distribution of yes and no among all the categories. There is no obvious pattern observed from the plot. We may examine the specific impact to the target variable of falling into each category in the following models.
 
-```{r}
+```{r cache=TRUE}
 ggplot(data = bankfull, aes(y = job, fill = y)) +
   geom_bar(position="dodge")+
   scale_fill_brewer(palette = 'Set3')
@@ -60,7 +60,7 @@ ggplot(data = bankfull, aes(y = job, fill = y)) +
 
 3 - marital : marital status (categorical: 'divorced','married','single','unknown'; note: 'divorced' means divorced or widowed). The plot shown as follow indicates the distribution of yes and no among all the categories. There is no obvious pattern observed from the plot. We may examine the specific impact to the target variable of falling into each category in the following models.
 
-```{r}
+```{r cache=TRUE}
 ggplot(data = bankfull, aes(y = marital, fill = y)) +
   geom_bar(position="dodge")+
   scale_fill_brewer(palette = 'Set3')
@@ -68,7 +68,7 @@ ggplot(data = bankfull, aes(y = marital, fill = y)) +
 
 4 - education (categorical: 'basic.4y','basic.6y','basic.9y','high.school','illiterate','professional.course','university.degree','unknown'). The plot shown as follow indicates the distribution of yes and no among all the categories. There is no obvious pattern observed from the plot. We may examine the specific impact to the target variable of falling into each category in the following models.
 
-```{r}
+```{r cache=TRUE}
 ggplot(data = bankfull, aes(y = education, fill = y)) +
   geom_bar(position="dodge")+
   scale_fill_brewer(palette = 'Set3')
@@ -76,7 +76,7 @@ ggplot(data = bankfull, aes(y = education, fill = y)) +
 
 5 - default: has credit in default? (categorical: 'no','yes','unknown'). The plot shown as follow indicates the distribution of yes and no among all the categories. There is no obvious pattern observed from the plot. We may examine the specific impact to the target variable of falling into each category in the following models.
 
-```{r}
+```{r cache=TRUE}
 ggplot(data = bankfull, aes(y = default, fill = y)) +
   geom_bar(position="dodge")+
   scale_fill_brewer(palette = 'Set3')
@@ -84,7 +84,7 @@ ggplot(data = bankfull, aes(y = default, fill = y)) +
 
 6 - housing: has housing loan? (categorical: 'no','yes','unknown'). The plot shown as follow indicates the distribution of yes and no among all the categories. There is no obvious pattern observed from the plot. We may examine the specific impact to the target variable of falling into each category in the following models.
 
-```{r}
+```{r cache=TRUE}
 ggplot(data = bankfull, aes(y = housing, fill = y)) +
   geom_bar(position="dodge")+
   scale_fill_brewer(palette = 'Set3')
@@ -92,7 +92,7 @@ ggplot(data = bankfull, aes(y = housing, fill = y)) +
 
 7 - loan: has personal loan? (categorical: 'no','yes','unknown'). The plot shown as follow indicates the distribution of yes and no among all the categories. There is no obvious pattern observed from the plot. We may examine the specific impact to the target variable of falling into each category in the following models.
 
-```{r}
+```{r cache=TRUE}
 ggplot(data = bankfull, aes(y = loan, fill = y)) +
   geom_bar(position="dodge")+
   scale_fill_brewer(palette = 'Set3')
@@ -101,7 +101,7 @@ ggplot(data = bankfull, aes(y = loan, fill = y)) +
 \# related with the last contact of the current campaign:\
 8 - contact: contact communication type (categorical: 'cellular','telephone'). The plot shown as follow indicates the distribution of yes and no among all the categories. There is no obvious pattern observed from the plot. We may examine the specific impact to the target variable of falling into each category in the following models.
 
-```{r}
+```{r cache=TRUE}
 ggplot(data = bankfull, aes(y = contact, fill = y)) +
   geom_bar(position="dodge")+
   scale_fill_brewer(palette = 'Set3')
@@ -110,7 +110,7 @@ ggplot(data = bankfull, aes(y = contact, fill = y)) +
 \# other attributes:\
 12 - campaign: number of contacts performed during this campaign and for this client (numeric, includes last contact). After scaling the campaign variables, I plot a overlapped numerical histogram showing distribution of campaign for each y category as shown below. However, there is no obvious difference in pattern of two different categories.
 
-```{r}
+```{r cache=TRUE}
 ggplot(bank,aes(x=campaign,fill=y))+
   geom_histogram()+
   scale_fill_brewer(palette = 'Set3')
@@ -118,7 +118,7 @@ ggplot(bank,aes(x=campaign,fill=y))+
 
 13 - pdays: number of days that passed by after the client was last contacted from a previous campaign (numeric; 999 means client was not previously contacted). After scaling the pdays variables, I plot a overlapped numerical histogram showing distribution of age for each y category as shown below. It is worth noticing that when the scaled pdays is negative, the proportion of client with term deposit largely increases. This is a indication of influential variable.
 
-```{r}
+```{r cache=TRUE}
 ggplot(subset(bank,pdays!=999),aes(x=pdays,fill=y))+
   geom_histogram()+
   scale_fill_brewer(palette = 'Set3')
@@ -126,7 +126,7 @@ ggplot(subset(bank,pdays!=999),aes(x=pdays,fill=y))+
 
 14 - previous: number of contacts performed before this campaign and for this client (numeric). After scaling the previous variables, I plot a overlapped numerical histogram showing distribution of previous for each y category as shown below. However, there is no obvious difference in pattern of two different categories.
 
-```{r}
+```{r cache=TRUE}
 ggplot(bank,aes(x=previous,fill=y))+
   geom_histogram()+
   scale_fill_brewer(palette = 'Set3')
@@ -134,7 +134,7 @@ ggplot(bank,aes(x=previous,fill=y))+
 
 15 - poutcome: outcome of the previous marketing campaign (categorical: 'failure','nonexistent','success'). The plot shown as follow indicates the distribution of yes and no among all the categories. It is quite obvious that the proportion of having term deposit is much higher for those client has successful previous campaigns. This may be an influential variable to the target variable y.
 
-```{r}
+```{r cache=TRUE}
 ggplot(data = bankfull, aes(y = poutcome, fill = y)) +
   geom_bar(position="dodge")+
   scale_fill_brewer(palette = 'Set3')
@@ -144,7 +144,7 @@ ggplot(data = bankfull, aes(y = poutcome, fill = y)) +
 
 17 - cons.price.idx: consumer price index - monthly indicator (numeric). This variable is renamed as priceIndex for the following analysis. After scaling the priceIndex variables, I plot a overlapped numerical histogram showing distribution of priceIndex for each y category as shown below. It is worth noticing that when the scaled priceIndex is smaller than -1 or larger than 2, the proportion of client with term deposit largely increases. This is a indication of influential variable.
 
-```{r}
+```{r cache=TRUE}
 ggplot(bank,aes(x=priceIndex,fill=y))+
   geom_histogram()+
   scale_fill_brewer(palette = 'Set3')
@@ -152,7 +152,7 @@ ggplot(bank,aes(x=priceIndex,fill=y))+
 
 18 - cons.conf.idx: consumer confidence index - monthly indicator (numeric). This variable is renamed as confidenceIndex for the following analysis. After scaling the confidenceIndex variables, I plot a overlapped numerical histogram showing distribution of confidenceIndex for each y category as shown below. It is worth noticing that when the scaled confidenceIndex is smaller than -1.5 or larger than 1, the proportion of client with term deposit largely increases. This is a indication of influential variable.
 
-```{r}
+```{r cache=TRUE}
 ggplot(bank,aes(x=confidenceIndex,fill=y))+
   geom_histogram()+
   scale_fill_brewer(palette = 'Set3')
@@ -160,22 +160,23 @@ ggplot(bank,aes(x=confidenceIndex,fill=y))+
 
 19 - euribor3m: Euro Interbank Offered Rate 3 month rate - daily indicator (numeric). This variable is renamed as InterestRateindex for the following analysis. After scaling the InterestRateindex variables, I plot a overlapped numerical histogram showing distribution of InterestRateindex for each y category as shown below. It is worth noticing that when the scaled interestRateIndex is smaller than -1.2 , the proportion of client with term deposit largely increases. This is a indication of influential variable.
 
-```{r}
+```{r cache=TRUE}
 ggplot(bank,aes(x=InterestRateindex,fill=y))+
   geom_histogram()+
   scale_fill_brewer(palette = 'Set3')
+#bank$InterestRateindex = bank$InterestRateindex**2
 ```
 
-```{r}
+```{r cache=TRUE}
 #keep binary variables
-df1 = subset(bankfull,select = c(marital, default, housing, loan,contact))
+df1 = subset(bankfull,select = c( default, housing, loan,contact))
 #process numerical values
 
 
 library(caret)
 
-dummy <- dummyVars(" ~ .", subset(bankfull, select = c(education,job,poutcome)))
-df <- data.frame(predict(dummy, newdata = subset(bankfull, select = c(education,job,poutcome)))) 
+dummy <- dummyVars(" ~ .", subset(bankfull, select = c(marital,education,job,poutcome)))
+df <- data.frame(predict(dummy, newdata = subset(bankfull, select = c(marital,education,job,poutcome)))) 
 bank = cbind(df,bank)
 bank = cbind(df1,bank)
 set.seed(5293)
@@ -183,4 +184,6 @@ n <- nrow(df)
 train <- sample(n, .8*n)
 train_dat <-bank[train, ]
 test_dat<- bank[-train,]
+
+
 ```

@@ -2,14 +2,14 @@
 
 In this section, we will create a logistic regression model and try to interpret the most important variables and their influence on the target variables. The detailed information of the model is indicated as below.
 
-```{r message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE, cache=TRUE}
 #build Logistic regression model
 fullmod<-glm(y~.,data=train_dat,family=binomial(link = 'logit'))
 LRpred = predict(fullmod,test_dat,type = 'response')
 summary(fullmod)
 ```
 
-```{r message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE,cache=TRUE}
 library(caret)
 library(reshape2)
 library(tibble)
@@ -34,9 +34,9 @@ ggplot(melt(shap_values),aes(value, reorder(variable, value, FUN = abs)))+
 
 After the logistic regression models are built, we may access the feature importance by shapley value plot. The plot above is showing the shapley value of each variable sorted by their absolute values.
 
-```{r message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE,cache=TRUE}
 library(pdp)
-pdp_hit_rf = partial(object = fullmod,pred.var = 'priceIndex')
+pdp_hit_rf = partial(object = fullmod,pred.var = 'priceIndex',prob = TRUE,type = 'classification')
 g <- ggplot(pdp_hit_rf, aes(priceIndex, yhat)) +
   geom_line() +
   geom_rug(data = train_dat, aes(priceIndex), inherit.aes = FALSE, alpha = .5,
@@ -45,9 +45,9 @@ g <- ggplot(pdp_hit_rf, aes(priceIndex, yhat)) +
 g+ylab('prob')
 ```
 
-```{r message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE,cache=TRUE}
 library(pdp)
-pdp_hit_rf = partial(fullmod,pred.var = 'InterestRateindex')
+pdp_hit_rf = partial(fullmod,pred.var = 'InterestRateindex',prob = TRUE,type = 'classification')
 g <- ggplot(pdp_hit_rf, aes(InterestRateindex,yhat)) +
   geom_line() +
   geom_rug(data = train_dat, aes(InterestRateindex), inherit.aes = FALSE, alpha = .5,
@@ -56,9 +56,9 @@ g <- ggplot(pdp_hit_rf, aes(InterestRateindex,yhat)) +
 g+ylab('prob')
 ```
 
-```{r warning=FALSE}
+```{r warning=FALSE,cache=TRUE}
 library(pdp)
-pdp_hit_rf = partial(fullmod,pred.var = 'campaign')
+pdp_hit_rf = partial(fullmod,pred.var = 'campaign',prob = TRUE,type = 'classification')
 g <- ggplot(pdp_hit_rf, aes(campaign, yhat)) +
   geom_line() +
   geom_rug(data = train_dat, aes(campaign), inherit.aes = FALSE, alpha = .5,
@@ -67,7 +67,7 @@ g <- ggplot(pdp_hit_rf, aes(campaign, yhat)) +
 g+ylab('prob')
 ```
 
-```{r}
+```{r, cache=TRUE}
 get_rates <- function(threshold, actual, response) {
   predicted <- ifelse(response < threshold, 0, 1)
   TP <- sum(actual == 1 & predicted == 1)
@@ -94,3 +94,7 @@ g <- ggplot(rocdf, aes(x = fpr, y = tpr, label = label)) +
   geom_label_repel(color = "blue", size = 2)
 plotly::ggplotly(g)
 ```
+
+
+
+

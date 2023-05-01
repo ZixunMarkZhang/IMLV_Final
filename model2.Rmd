@@ -1,6 +1,6 @@
 # [Decision Tree]
 
-```{r}
+```{r,cache=TRUE}
 library(rpart)
 library(rpart.plot)
 
@@ -12,23 +12,23 @@ pred <- function(model, newdata) {
 rpart.plot(DTmod)
 ```
 
-```{r}
+```{r,cache=TRUE}
 plotcp(DTmod)
 ```
 
 
-```{r}
+```{r,cache=TRUE}
 DTmod <- rpart(y ~ ., data = train_dat,cp=0.0027,method='class')
 
 DTpred = predict(DTmod,test_dat)[,2]
 mean((DTpred>0.5)==(test_dat$y=='yes'))
 ```
 
-```{r}
+```{r,cache=TRUE}
 rpart.plot(DTmod)
 ```
 
-```{r}
+```{r,cache=TRUE}
 medabs<-function(input){
   abs(median(input))
 }
@@ -50,9 +50,9 @@ ggplot(melt(shap_values),aes(value, reorder(variable, value, FUN = medabs)))+
 
 
 
-```{r}
+```{r,cache=TRUE}
 library(pdp)
-pdp_hit_rf = partial(DTmod,pred.var = 'InterestRateindex')
+pdp_hit_rf = partial(DTmod,pred.var = 'InterestRateindex',prob = TRUE,type = 'classification')
 g <- ggplot(pdp_hit_rf, aes(InterestRateindex, yhat)) +
   geom_line() +
   geom_rug(data = train_dat, aes(InterestRateindex), inherit.aes = FALSE, alpha = .5,
@@ -60,9 +60,9 @@ g <- ggplot(pdp_hit_rf, aes(InterestRateindex, yhat)) +
   theme_bw(16)
 g+ylab('prob')
 ```
-```{r}
+```{r,cache=TRUE}
 library(pdp)
-pdp_hit_rf = partial(DTmod,pred.var = 'confidenceIndex')
+pdp_hit_rf = partial(DTmod,pred.var = 'confidenceIndex',prob = TRUE,type = 'classification')
 g <- ggplot(pdp_hit_rf, aes(confidenceIndex, 1/(1+exp(yhat)))) +
   geom_line() +
   geom_rug(data = train_dat, aes(confidenceIndex), inherit.aes = FALSE, alpha = .5,
@@ -71,9 +71,9 @@ g <- ggplot(pdp_hit_rf, aes(confidenceIndex, 1/(1+exp(yhat)))) +
 g+ylab('prob')
 ```
 
-```{r}
+```{r,cache=TRUE}
 library(pdp)
-pdp_hit_rf = partial(DTmod,pred.var = 'priceIndex')
+pdp_hit_rf = partial(DTmod,pred.var = 'priceIndex',prob = TRUE,type = 'classification')
 g <- ggplot(pdp_hit_rf, aes(priceIndex, 1/(1+exp(yhat)))) +
   geom_line() +
   geom_rug(data = train_dat, aes(priceIndex), inherit.aes = FALSE, alpha = .5,
@@ -84,7 +84,7 @@ g+ylab('prob')
 
 
 
-```{r}
+```{r,cache=TRUE}
 get_rates <- function(threshold, actual, response) {
   predicted <- ifelse(response < threshold, 0, 1)
   
