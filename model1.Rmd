@@ -1,14 +1,15 @@
 # [Logistic Regression]
 
-In this section, we will create a logistic regression model and try to interpret the most important variables and their influence on the target variables. The detailed information of the model is indicated as below.
+In this section, we will create a logistic regression model and try to interpret the most important variables and their influence on the target variables. The detailed information of the model is indicated as below. Through the p-values of each variables listed in the right most column, we can observe that whether the contact is via telephone, campaign, pdays, priceIndex, confidenceIndex, and interestRateIndex shows statsitical significance with small p-value. It indicates that these variables are more influential toward the target variable with non-zero coefficient.
 
 ```{r message=FALSE, warning=FALSE, cache=TRUE}
+set.seed(5293)
 #build Logistic regression model
 fullmod<-glm(y~.,data=train_dat,family=binomial(link = 'logit'))
 LRpred = predict(fullmod,test_dat,type = 'response')
 summary(fullmod)
 ```
-
+After the logistic regression models are built, we may access the feature importance by shapley value plot. The plot above is showing the shapley value of each variable sorted by their absolute values of mean shapley values. The most influential 5 variables are interest rate index, price index, default, pdays, and whether the previous campaign fails.
 ```{r message=FALSE, warning=FALSE,cache=TRUE}
 library(caret)
 library(reshape2)
@@ -32,23 +33,11 @@ ggplot(melt(shap_values),aes(value, reorder(variable, value, FUN = abs)))+
   geom_boxplot()
 ```
 
-After the logistic regression models are built, we may access the feature importance by shapley value plot. The plot above is showing the shapley value of each variable sorted by their absolute values.
-
+To begin with, we create a partial dependence plot(named as PDP plot in following sections) showing the relationship between whether the previous campaign fails and the target variable. For all the PDP plots in this project, we set the y axis as the probability of y=yes instead of log odd by parameter prob=TRUE to make the plot more interpretable. The plot following shows the relationship between interest rate index and probability of y=yes. The line shows decreasing trend with positive concavity, Indicating that the probability of the person having term deposit decreases with the increase in interest rate index.
 ```{r message=FALSE, warning=FALSE,cache=TRUE}
 library(pdp)
-pdp_hit_rf = partial(object = fullmod,pred.var = 'priceIndex',prob = TRUE,type = 'classification')
-g <- ggplot(pdp_hit_rf, aes(priceIndex, yhat)) +
-  geom_line() +
-  geom_rug(data = train_dat, aes(priceIndex), inherit.aes = FALSE, alpha = .5,
-  color = "red") +
-  theme_bw(16)
-g+ylab('prob')
-```
-
-```{r message=FALSE, warning=FALSE,cache=TRUE}
-library(pdp)
-pdp_hit_rf = partial(fullmod,pred.var = 'InterestRateindex',prob = TRUE,type = 'classification')
-g <- ggplot(pdp_hit_rf, aes(InterestRateindex,yhat)) +
+pdp_lr = partial(object = fullmod,pred.var = 'InterestRateindex',prob = TRUE,type = 'classification')
+g <- ggplot(pdp_lr, aes(InterestRateindex, yhat)) +
   geom_line() +
   geom_rug(data = train_dat, aes(InterestRateindex), inherit.aes = FALSE, alpha = .5,
   color = "red") +
@@ -56,15 +45,60 @@ g <- ggplot(pdp_hit_rf, aes(InterestRateindex,yhat)) +
 g+ylab('prob')
 ```
 
+The plot following shows the relationship between price index and probability of y=yes.The line shows increasing trend with positive concavity, Indicating that the probability of the person having term deposit increases with the increase in price index.
 ```{r warning=FALSE,cache=TRUE}
 library(pdp)
-pdp_hit_rf = partial(fullmod,pred.var = 'campaign',prob = TRUE,type = 'classification')
-g <- ggplot(pdp_hit_rf, aes(campaign, yhat)) +
+pdp_lr2 = partial(fullmod,pred.var = 'priceIndex',prob = TRUE,type = 'classification')
+g <- ggplot(pdp_lr2, aes(priceIndex, yhat)) +
   geom_line() +
-  geom_rug(data = train_dat, aes(campaign), inherit.aes = FALSE, alpha = .5,
+  geom_rug(data = train_dat, aes(priceIndex), inherit.aes = FALSE, alpha = .5,
   color = "red") +
   theme_bw(16)
 g+ylab('prob')
+```
+
+The plot following is the PDP plot of whether the person has credit default against the target variable. We can observe  that if the person has credit default, holding all other variable constant, the person will not have term deposit.
+```{r message=FALSE, warning=FALSE,cache=TRUE}
+library(pdp)
+pdp_lr3 = partial(fullmod,pred.var = 'default',prob = TRUE,type = 'classification')
+g <- ggplot(pdp_lr3, aes(default,yhat)) +
+  geom_bar(stat = 'identity',fill = 'cadetblue2') +
+  geom_rug(data = train_dat, aes(default), inherit.aes = FALSE, alpha = .5,
+  color = "red") +
+  theme_bw(16)
+g+ylab('prob')
+```
+
+The plot following shows the relationship between confidence index and probability of y=yes.The line shows decreasing trend, Indicating that the probability of the person having term deposit decreases with the increase in number of days since last previous campaign.
+```{r warning=FALSE,cache=TRUE}
+library(pdp)
+pdp_lr3 = partial(fullmod,pred.var = 'pdays',prob = TRUE,type = 'classification')
+g <- ggplot(pdp_lr3, aes(pdays, yhat)) +
+  geom_line() +
+  geom_rug(data = train_dat, aes(pdays), inherit.aes = FALSE, alpha = .5,
+  color = "red") +
+  theme_bw(16)
+g+ylab('prob')
+```
+
+The plot following is the PDP plot of whether the person was contacted via telephone or cellular against the target variable. It is quite obvious that if the previous campaign fails, holding all other variable constant, the person is much less likely to have term deposit at the bank.
+
+```{r message=FALSE, warning=FALSE,cache=TRUE}
+library(pdp)
+pdp_lr4 = partial(fullmod,pred.var = 'poutcomefailure',prob = TRUE,type = 'classification')
+g <- ggplot(pdp_lr4, aes(poutcomefailure,yhat)) +
+  geom_bar(stat = 'identity',fill = 'cadetblue2') +
+  geom_rug(data = train_dat, aes(poutcomefailure), inherit.aes = FALSE, alpha = .5,
+  color = "red") +
+  theme_bw(16)
+g+ylab('prob')
+```
+
+
+
+The following cell shows the test accuracy of logitic regression model. The model accuracy on test data is 0.8876681, which indicates it is a good model.
+```{r}
+mean((LRpred>0.5)==(test_dat$y=='yes'))
 ```
 
 ```{r, cache=TRUE}
