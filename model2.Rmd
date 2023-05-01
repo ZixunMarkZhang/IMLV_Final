@@ -1,26 +1,37 @@
 # [Decision Tree]
+
 ```{r}
 library(rpart)
+library(rpart.plot)
+
 DTmod <- rpart(y ~ ., data = train_dat,cp=0,method='class')
 pred <- function(model, newdata) {
   predict(model, newdata = newdata, type = "prob")[, 2]
 }
+
+rpart.plot(DTmod)
+```
+
+```{r}
 plotcp(DTmod)
 ```
 
 
 ```{r}
-DTmod <- rpart(y ~ ., data = train_dat,cp=0.002,method='class')
+DTmod <- rpart(y ~ ., data = train_dat,cp=0.0027,method='class')
 
 DTpred = predict(DTmod,test_dat)[,2]
+mean((DTpred>0.5)==(test_dat$y=='yes'))
 ```
 
 ```{r}
-library(rpart.plot)
 rpart.plot(DTmod)
 ```
 
 ```{r}
+medabs<-function(input){
+  abs(median(input))
+}
 
 shap_values <- fastshap::explain(
   DTmod, 
@@ -33,25 +44,28 @@ shap_values <- fastshap::explain(
 
 library(ggplot2)
 library(reshape2)
-ggplot(melt(shap_values),aes(value, reorder(variable, value, FUN = median)))+
-  geom_boxplot()
+ggplot(melt(shap_values),aes(value, reorder(variable, value, FUN = medabs)))+
+  geom_boxplot(outlier.size=1)
 ```
+
+
+
 ```{r}
 library(pdp)
-pdp_hit_rf = partial(DTmod,pred.var = 'euribor3m')
-g <- ggplot(pdp_hit_rf, aes(euribor3m, yhat)) +
+pdp_hit_rf = partial(DTmod,pred.var = 'InterestRateindex')
+g <- ggplot(pdp_hit_rf, aes(InterestRateindex, yhat)) +
   geom_line() +
-  geom_rug(data = train_dat, aes(euribor3m), inherit.aes = FALSE, alpha = .5,
+  geom_rug(data = train_dat, aes(InterestRateindex), inherit.aes = FALSE, alpha = .5,
   color = "red") +
   theme_bw(16)
 g+ylab('prob')
 ```
 ```{r}
 library(pdp)
-pdp_hit_rf = partial(DTmod,pred.var = 'cons.conf.idx')
-g <- ggplot(pdp_hit_rf, aes(cons.conf.idx, yhat)) +
+pdp_hit_rf = partial(DTmod,pred.var = 'confidenceIndex')
+g <- ggplot(pdp_hit_rf, aes(confidenceIndex, 1/(1+exp(yhat)))) +
   geom_line() +
-  geom_rug(data = train_dat, aes(cons.conf.idx), inherit.aes = FALSE, alpha = .5,
+  geom_rug(data = train_dat, aes(confidenceIndex), inherit.aes = FALSE, alpha = .5,
   color = "red") +
   theme_bw(16)
 g+ylab('prob')
@@ -59,25 +73,16 @@ g+ylab('prob')
 
 ```{r}
 library(pdp)
-pdp_hit_rf = partial(DTmod,pred.var = 'cons.price.idx')
-g <- ggplot(pdp_hit_rf, aes(cons.price.idx, yhat)) +
+pdp_hit_rf = partial(DTmod,pred.var = 'priceIndex')
+g <- ggplot(pdp_hit_rf, aes(priceIndex, 1/(1+exp(yhat)))) +
   geom_line() +
-  geom_rug(data = train_dat, aes(cons.price.idx), inherit.aes = FALSE, alpha = .5,
+  geom_rug(data = train_dat, aes(priceIndex), inherit.aes = FALSE, alpha = .5,
   color = "red") +
   theme_bw(16)
 g+ylab('prob')
 ```
 
-```{r}
-library(pdp)
-pdp_hit_rf = partial(DTmod,pred.var = 'euribor3m')
-g <- ggplot(pdp_hit_rf, aes(euribor3m, yhat)) +
-  geom_line() +
-  geom_rug(data = train_dat, aes(euribor3m), inherit.aes = FALSE, alpha = .5,
-  color = "red") +
-  theme_bw(16)
-g+ylab('prob')
-```
+
 
 ```{r}
 get_rates <- function(threshold, actual, response) {
@@ -96,7 +101,7 @@ get_rates <- function(threshold, actual, response) {
 }
 
 
-rocdf <- map_df(seq(0, 1, .01), get_rates, test_dat$y==TRUE, DTpred)
+rocdf <- map_df(seq(0, 1, .01), get_rates, test_dat$y=='yes', DTpred)
 rocdf <- rocdf |> 
   mutate(label = ifelse(threshold %in% seq(0, 1, .01),
                         threshold, NA))

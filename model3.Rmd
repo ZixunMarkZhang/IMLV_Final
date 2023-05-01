@@ -6,6 +6,7 @@ pred <- function(model, newdata) {
   predict(model, newdata = newdata, type = "prob")[, 2]
 }
 RFpred = predict(RFmod,test_dat,type = 'prob')[,2]
+mean((RFpred>0.5)==(test_dat$y=='yes'))
 ```
 
 ```{r}
@@ -17,16 +18,19 @@ shap_values <- fastshap::explain(
   nsim = 5,
   newdata = test_dat
 )
-ggplot(melt(shap_values),aes(value, variable))+
+ggplot(melt(shap_values),aes(value, reorder(variable, value, FUN = medabs)))+
   geom_boxplot()
 ```
 
+
+
+
 ```{r}
 library(pdp)
-pdp_hit_rf = partial(RFmod,pred.var = 'euribor3m')
-g <- ggplot(pdp_hit_rf, aes(euribor3m, yhat)) +
+pdp_hit_rf = partial(RFmod,pred.var = 'InterestRateindex')
+g <- ggplot(pdp_hit_rf, aes(InterestRateindex, yhat)) +
   geom_line() +
-  geom_rug(data = train_dat, aes(euribor3m), inherit.aes = FALSE, alpha = .5,
+  geom_rug(data = train_dat, aes(InterestRateindex), inherit.aes = FALSE, alpha = .5,
   color = "red") +
   theme_bw(16)
 g+ylab('prob')
@@ -34,10 +38,10 @@ g+ylab('prob')
 
 ```{r}
 library(pdp)
-pdp_hit_rf = partial(RFmod,pred.var = 'cons.price.idx')
-g <- ggplot(pdp_hit_rf, aes(cons.price.idx, yhat)) +
+pdp_hit_rf = partial(RFmod,pred.var = 'priceIndex')
+g <- ggplot(pdp_hit_rf, aes(priceIndex, yhat)) +
   geom_line() +
-  geom_rug(data = train_dat, aes(cons.price.idx), inherit.aes = FALSE, alpha = .5,
+  geom_rug(data = train_dat, aes(priceIndex), inherit.aes = FALSE, alpha = .5,
   color = "red") +
   theme_bw(16)
 g+ylab('prob')
@@ -45,10 +49,10 @@ g+ylab('prob')
 
 ```{r}
 library(pdp)
-pdp_hit_rf = partial(RFmod,pred.var = 'cons.conf.idx')
-g <- ggplot(pdp_hit_rf, aes(cons.conf.idx, yhat)) +
+pdp_hit_rf = partial(RFmod,pred.var = 'confidenceIndex')
+g <- ggplot(pdp_hit_rf, aes(confidenceIndex, yhat)) +
   geom_line() +
-  geom_rug(data = train_dat, aes(cons.conf.idx), inherit.aes = FALSE, alpha = .5,
+  geom_rug(data = train_dat, aes(confidenceIndex), inherit.aes = FALSE, alpha = .5,
   color = "red") +
   theme_bw(16)
 g+ylab('prob')
@@ -71,7 +75,7 @@ get_rates <- function(threshold, actual, response) {
 }
 
 
-rocdf <- map_df(seq(0, 1, .01), get_rates, test_dat$y==TRUE, RFpred)
+rocdf <- map_df(seq(0, 1, .01), get_rates, test_dat$y=='yes', RFpred)
 rocdf <- rocdf |> 
   mutate(label = ifelse(threshold %in% seq(0, 1, .01),
                         threshold, NA))
