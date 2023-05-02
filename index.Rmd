@@ -29,7 +29,7 @@ The data set in this project is the [Bank Marketing Data Set](https://archive.ic
 13 - emp.var.rate: employment variation rate - quarterly indicator (numeric)\
 14 - cons.price.idx: consumer price index - monthly indicator (numeric)\
 15 - cons.conf.idx: consumer confidence index - monthly indicator (numeric)\
-16 - euribor3m: euribor 3 month rate - daily indicator (numeric)\
+16 - euribor3m: Euro Interbank Offered Rate 3 month rate - daily indicator (numeric)\
 17 - nr.employed: number of employees - quarterly indicator (numeric)
 
 The label of this data set to predict is a binary variable whether the customer subscribed a term deposit.
@@ -56,7 +56,7 @@ Decision tree will build a model where the nodes splits by calculating the cutof
 
 Random forest is a model where the classification decision is made according to most common decision tree result in a number of random generated decision trees. This model is also a candidate of best model.
 
-After the models are built, we will try to visualize the effect of each feature with shapley value plot. Then we will select 5 most influential varaibles from each models, create partial dependent plot, and try to interpret the effect of the variable towar the target variable.
+After the models are built, we will try to visualize the effect of each feature with shapley value plot. Then we will select 5 most influential varaibles from each models, create partial dependent plot, and try to interpret the effect of the variable toward the target variable.
 
 The evaluation of the models is not only seeking for accuracy but also interpretability.  At the end of this project, the model selection will be based on not only numerical metrics such as accuracy or loss but also visualized metrics such as feature importance plot and ROC curve to ensure interpretability, acceptable model complexity, and preciseness.
 

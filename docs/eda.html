@@ -107,70 +107,70 @@
 <div id="eda" class="section level1 hasAnchor" number="2">
 <h1><span class="header-section-number">Chapter 2</span> [EDA]<a href="eda.html#eda" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>In this section, we will brief through the data by creating plots for all variables under y=yes and y=no and see if there is differences in distribution.</p>
-<p><img src="finalproj_files/figure-html/unnamed-chunk-34-1.png" width="672" /></p>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <p>The plot above is a bar plot showing the counts of the response variables y, defined by whether the person has term deposit. It is quite obvious that there are more cases with y equal to no than ones with y equal to yes. However, considering the number of cases included, we do not have to do any sampling or weight adjustment to the data.</p>
-<p><img src="finalproj_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>To begin with, if we take all the numerical data as a whole, we may want to examine if multicolinearity exists in this data. The plot above shows the correlation matrix of all numerical models. From the plot above, we identify that the correlation are high among nr.employed, emp.var.rate, and euribor3m. The correlation between cons.price.idx and emp.var.rate is also high. Hence we may drop nr.employed and emp.var.rate to avoid the problem of multicolinearity at the moment.</p>
 <p>In the section below, we will take a look of each variable and examine if there are any explicit pattern showing correlation between variables and the target variable.</p>
 <ol style="list-style-type: decimal">
 <li>age (numeric). After scaling the age variables, I plot a overlapped numerical histogram showing distribution of age for each y category as shown below. It is obvious that for scaled age larger than 2, the probability of having term deposit largely increases.</li>
 </ol>
-<p><img src="finalproj_files/figure-html/unnamed-chunk-37-1.png" width="672" /></p>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <ol start="2" style="list-style-type: decimal">
 <li>job : type of job (categorical: ‘admin.’, ‘bluecollar’, ‘entrepreneur’, ‘housemaid’, ‘management’, ‘retired’, ‘self-employed’, ‘services’, ‘student’, ‘technician’, ‘unemployed’, ‘unknown’). This variable will be processed by one hot encoder. The plot shown as follow indicates the distribution of yes and no among all the categories. We can observe that student and retired people are more likely to have term deposit. We may examine the specific impact to the target variable of falling into each category in the following models.</li>
 </ol>
-<p><img src="finalproj_files/figure-html/unnamed-chunk-38-1.png" width="672" /></p>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <ol start="3" style="list-style-type: decimal">
 <li>marital : marital status (categorical: ‘divorced’,‘married’,‘single’,‘unknown’; note: ‘divorced’ means divorced or widowed). This variable will be processed by one hot encoder. The plot shown as follow indicates the distribution of yes and no among all the categories. There is no obvious pattern observed from the plot. We may examine the specific impact to the target variable of falling into each category in the following models.</li>
 </ol>
-<p><img src="finalproj_files/figure-html/unnamed-chunk-39-1.png" width="672" /></p>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <ol start="4" style="list-style-type: decimal">
 <li>education (categorical: ‘basic.4y’, ‘basic.6y’, ‘basic.9y’, ‘high.school’, ‘illiterate’, ‘professional.course’, ‘university.degree’, ‘unknown’). This variable will be processed by onehot encoder. The plot shown as follow indicates the distribution of yes and no among all the categories. There is no obvious pattern observed from the plot. We may examine the specific impact to the target variable of falling into each category in the following models.</li>
 </ol>
-<p><img src="finalproj_files/figure-html/unnamed-chunk-40-1.png" width="672" /></p>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <ol start="5" style="list-style-type: decimal">
 <li>default: has credit in default? (categorical: ‘no’,‘yes’,‘unknown’). The plot shown as follow indicates the distribution of yes and no among all the categories. There is no obvious pattern observed from the plot. We may examine the specific impact to the target variable of falling into each category in the following models.</li>
 </ol>
-<p><img src="finalproj_files/figure-html/unnamed-chunk-41-1.png" width="672" /></p>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <ol start="6" style="list-style-type: decimal">
 <li>housing: has housing loan? (categorical: ‘no’,‘yes’,‘unknown’). The plot shown as follow indicates the distribution of yes and no among all the categories. There is no obvious pattern observed from the plot. We may examine the specific impact to the target variable of falling into each category in the following models.</li>
 </ol>
-<p><img src="finalproj_files/figure-html/unnamed-chunk-42-1.png" width="672" /></p>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <ol start="7" style="list-style-type: decimal">
 <li>loan: has personal loan? (categorical: ‘no’,‘yes’,‘unknown’). The plot shown as follow indicates the distribution of yes and no among all the categories. There is no obvious pattern observed from the plot. We may examine the specific impact to the target variable of falling into each category in the following models.</li>
 </ol>
-<p><img src="finalproj_files/figure-html/unnamed-chunk-43-1.png" width="672" /></p>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p># related with the last contact of the current campaign:<br />
 8 - contact: contact communication type (categorical: ‘cellular’,‘telephone’). The plot shown as follow indicates the distribution of yes and no among all the categories. There is no obvious pattern observed from the plot. We may examine the specific impact to the target variable of falling into each category in the following models.</p>
-<p><img src="finalproj_files/figure-html/unnamed-chunk-44-1.png" width="672" /></p>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <ol start="9" style="list-style-type: decimal">
 <li>campaign: number of contacts performed during this campaign and for this client (numeric, includes last contact). After scaling the campaign variables, I plot a overlapped numerical histogram showing distribution of campaign for each y category as shown below. However, there is no obvious difference in pattern of two different categories.</li>
 </ol>
-<p><img src="finalproj_files/figure-html/unnamed-chunk-45-1.png" width="672" /></p>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <ol start="10" style="list-style-type: decimal">
 <li>pdays: number of days that passed by after the client was last contacted from a previous campaign (numeric; 999 means client was not previously contacted). After scaling the pdays variables, I plot a overlapped numerical histogram showing distribution of age for each y category as shown below. It is worth noticing that when the scaled pdays is negative, the proportion of client with term deposit largely increases. This is a indication of influential variable.</li>
 </ol>
-<p><img src="finalproj_files/figure-html/unnamed-chunk-46-1.png" width="672" /></p>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <ol start="11" style="list-style-type: decimal">
 <li>previous: number of contacts performed before this campaign and for this client (numeric). After scaling the previous variables, I plot a overlapped numerical histogram showing distribution of previous for each y category as shown below. However, there is no obvious difference in pattern of two different categories.</li>
 </ol>
-<p><img src="finalproj_files/figure-html/unnamed-chunk-47-1.png" width="672" /></p>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <ol start="12" style="list-style-type: decimal">
 <li>poutcome: outcome of the previous marketing campaign (categorical: ‘failure’,‘nonexistent’,‘success’). This variable will be processed by onehot encoder. The plot shown as follow indicates the distribution of yes and no among all the categories. It is quite obvious that the proportion of having term deposit is much higher for those client has successful previous campaigns. This may be an influential variable to the target variable y.</li>
 </ol>
-<p><img src="finalproj_files/figure-html/unnamed-chunk-48-1.png" width="672" /></p>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 <ol start="13" style="list-style-type: decimal">
 <li>cons.price.idx: consumer price index - monthly indicator (numeric). This variable is renamed as priceIndex for the following analysis. After scaling the priceIndex variables, I plot a overlapped numerical histogram showing distribution of priceIndex for each y category as shown below. It is worth noticing that when the scaled priceIndex is smaller than -1 or larger than 2, the proportion of client with term deposit largely increases. This is a indication of influential variable.</li>
 </ol>
-<p><img src="finalproj_files/figure-html/unnamed-chunk-49-1.png" width="672" /></p>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
 <ol start="14" style="list-style-type: decimal">
 <li>cons.conf.idx: consumer confidence index - monthly indicator (numeric). This variable is renamed as confidenceIndex for the following analysis. After scaling the confidenceIndex variables, I plot a overlapped numerical histogram showing distribution of confidenceIndex for each y category as shown below. It is worth noticing that when the scaled confidenceIndex is smaller than -1.5 or larger than 1, the proportion of client with term deposit largely increases. This is a indication of influential variable.</li>
 </ol>
-<p><img src="finalproj_files/figure-html/unnamed-chunk-50-1.png" width="672" /></p>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
 <ol start="15" style="list-style-type: decimal">
 <li>euribor3m: Euro Interbank Offered Rate 3 month rate - daily indicator (numeric). This variable is renamed as InterestRateindex for the following analysis. After scaling the InterestRateindex variables, I plot a overlapped numerical histogram showing distribution of InterestRateindex for each y category as shown below. It is worth noticing that when the scaled interestRateIndex is smaller than -1.2 , the proportion of client with term deposit largely increases. This is a indication of influential variable.</li>
 </ol>
-<p><img src="finalproj_files/figure-html/unnamed-chunk-51-1.png" width="672" /></p>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
 <p>After briefing through the variables, we separate the dataset to train data and test data proportion 0.2, and we may goes to model creating.</p>
 
 </div>

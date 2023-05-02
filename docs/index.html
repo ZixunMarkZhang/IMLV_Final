@@ -133,7 +133,7 @@
 13 - emp.var.rate: employment variation rate - quarterly indicator (numeric)<br />
 14 - cons.price.idx: consumer price index - monthly indicator (numeric)<br />
 15 - cons.conf.idx: consumer confidence index - monthly indicator (numeric)<br />
-16 - euribor3m: euribor 3 month rate - daily indicator (numeric)<br />
+16 - euribor3m: Euro Interbank Offered Rate 3 month rate - daily indicator (numeric)<br />
 17 - nr.employed: number of employees - quarterly indicator (numeric)</p>
 <p>The label of this data set to predict is a binary variable whether the customer subscribed a term deposit.</p>
 <p>The features will be preprocessed at the beginning of the project. The categorical data will be encoded by one hot encoder. The numerical data will be normalized if it significantly different mean and standard deviation.</p>
@@ -151,7 +151,7 @@
 <p>Decision tree will build a model where the nodes splits by calculating the cutoff with minimum the gini index, and the tree stops generating at gini index reaches 0 at each nodes. After the tree is built, we may access it to make classification predictions. Even if overfitting is likely to happen, we may address this by prune the tree.</p>
 <p>3.3 Random Forest</p>
 <p>Random forest is a model where the classification decision is made according to most common decision tree result in a number of random generated decision trees. This model is also a candidate of best model.</p>
-<p>After the models are built, we will try to visualize the effect of each feature with shapley value plot. Then we will select 5 most influential varaibles from each models, create partial dependent plot, and try to interpret the effect of the variable towar the target variable.</p>
+<p>After the models are built, we will try to visualize the effect of each feature with shapley value plot. Then we will select 5 most influential varaibles from each models, create partial dependent plot, and try to interpret the effect of the variable toward the target variable.</p>
 <p>The evaluation of the models is not only seeking for accuracy but also interpretability. At the end of this project, the model selection will be based on not only numerical metrics such as accuracy or loss but also visualized metrics such as feature importance plot and ROC curve to ensure interpretability, acceptable model complexity, and preciseness.</p>
 <p>Citation</p>
 <ol style="list-style-type: decimal">
