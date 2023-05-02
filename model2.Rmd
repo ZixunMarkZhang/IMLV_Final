@@ -1,5 +1,7 @@
 # [Decision Tree]
+
 In this section, we will create a decision tree model predicting y with all variables introduced in EDA. In the plot below, we generate a full decision tree where all the nodes are pure. However, it is obvious that the decision tree is over complicated and has the problem of overfitting. We may then plot the complexity plot then to prune the tree for making predictions. We may use the full models to visualize and interpret to ensure all variables are considered,
+
 ```{r,cache=TRUE}
 set.seed(5293)
 library(rpart)
@@ -12,16 +14,21 @@ pred <- function(model, newdata) {
 
 rpart.plot(DTmodf)
 ```
+
 In the plot below, we generate a graph of validation error against the complexity parameter of the decision tree. It is quite obvious that the validation error reaches minimum when complexity parameter equal to 0.0027. Hence we may generate another pruned decision tree for prediction with cp=0.0027.
+
 ```{r,cache=TRUE}
 plotcp(DTmodf)
 ```
+
 The following graph shows the structure of our pruned decision tree. Here we can see that this tree is much simplified with smaller depth.
+
 ```{r,cache=TRUE}
 DTmod <- rpart(y ~ ., data = train_dat,cp=0.0027,method='class')
 rpart.plot(DTmod)
 ```
-After the decision tree model are built, we may access the feature importance by shapley value plot of the pruned decision tree. The plot following is showing the shapley value of each variable sorted by their absolute values of mean shapley values. The most influential 5 variables are interest rate index, way of contacting, number of contact in this campaign, age, and whether the previous campaign fails,.
+
+After the decision tree model are built, we may access the feature importance by shapley value plot of the pruned decision tree. The plot following is showing the shapley value of each variable sorted by their absolute values of mean shapley values. The most influential 5 variables are interest rate index, way of contacting, number of contact in this campaign, age, and whether the previous campaign fails. We will create PDP plot of these 5 variables to inspect if they actually create meaningful impact on prediction.
 
 ```{r,cache=TRUE}
 avgabs<-function(input){
@@ -43,7 +50,8 @@ ggplot(melt(shap_values),aes(value, reorder(variable, value, FUN = avgabs)))+
   geom_boxplot(outlier.size=1)
 ```
 
-The following plot shows the relationship between interest rate index and probability of y=yes. The curve shows overall decreasing trend,which is consistent with PDP plot in logistic regression, with a increase at interest rate index equal to negative 1. If we combine this plot with the EDA overlapped histogram in EDA, the pattern is reasonable. The EDA shows deceasing and then increasing in probability in interest rate index <-1, which is the same as what the PDP shows. When the index is larger than 0, the probability is even lower, hence we see another decreasing in the PDP plot.
+The following PDP plot shows the relationship between scaled interest rate index and predicted probability of y=yes. The curve shows overall decreasing trend, which is consistent with PDP plot in logistic regression, with a increase at scaled interest rate index equal to negative 1. If we combine this plot with the EDA overlapped histogram in EDA, the pattern is reasonable. The EDA shows deceasing and then increasing in probability in scaled interest rate index \<-1, which is the same as what the PDP shows. When the index is larger than 0, the probability is even lower, hence we see another decreasing in the PDP plot.
+
 ```{r,cache=TRUE}
 library(pdp)
 pdp_dt = partial(DTmodf,pred.var = 'InterestRateindex',prob = TRUE,type = 'classification')
@@ -55,7 +63,8 @@ g <- ggplot(pdp_dt, aes(InterestRateindex, 1/(1+exp(yhat)))) +
 g+ylab('prob')
 ```
 
-The plot following is the PDP plot of whether the person was contacted via telephone or cellular against the target variable. We can observe  that if the contact is by telephone, holding all other variable constant, the person is slightly more likely to have term deposit at the bank.This result may not be so meaningful because the shapley value plots indicates that the lower quantile, median, upper quantile contribution of this variable toward target variable is 0. In other words, decision tree does not create a meaningful boundary distinguishing these two variables. That is also why the PDP plot here shows a small difference in probability.
+The PDP plot following is the PDP plot of whether the person was contacted via telephone or cellular against the target variable. We can observe that if the contact is by telephone, holding all other variable constant, the person is slightly more likely to have term deposit at the bank. However, the shapley value plots indicates that the lower quantile, median, upper quantile contribution of this variable toward target variable is 0. In other words, decision tree does not create a meaningful boundary distinguishing these two variables. That is also why the PDP plot here shows a small difference in predicted probability.
+
 ```{r message=FALSE, warning=FALSE,cache=TRUE}
 library(pdp)
 pdp_dt1 = partial(DTmodf,pred.var = 'contact',prob = TRUE,type = 'classification')
@@ -67,7 +76,7 @@ g <- ggplot(pdp_dt1, aes(contact,yhat)) +
 g+ylab('prob')
 ```
 
-The following plot shows the relationship between number of contact in this campaign and probability of y=yes. The curve shows overall increasing trend,with a decreasing and then increasing at campaign=2.5. If we combine this plot with the EDA overlapped histogram in EDA, the pattern is reasonable. The EDA shows shows a overall increasing in proportion of y=yes with the increase in number of contact, however, the number of yes case is almost zero when campaign reaches 2.5, which explains why we observe such decrease in PDP plot.
+The following PDP plot shows the relationship between scaled number of contact in this campaign and predicted probability of y=yes. The curve shows overall increasing trend,with a decreasing and then increasing at campaign=2.5. If we combine this plot with the EDA overlapped histogram in EDA, the pattern is reasonable. The EDA shows shows a overall increasing in proportion of y=yes with the increase in scaled number of contact, however, the number of yes case is almost zero when scaled campaign reaches 2.5, which explains why we observe such decrease in PDP plot.
 
 ```{r,cache=TRUE}
 library(pdp)
@@ -79,7 +88,8 @@ g <- ggplot(pdp_dt2, aes(campaign, yhat)) +
   theme_bw(16)
 g+ylab('prob')
 ```
-The following plot shows the relationship between age and probability of y=yes. The curve shows overall increasing trend,with a decreasing and then increasing at campaign=2.5. If we combine this plot with the EDA overlapped histogram in EDA, the pattern is reasonable. The EDA shows shows a overall increasing in proportion of y=yes with the increase in number of contact, however, the number of yes case is almost zero when campaign reaches 2.5, which explains why we observe such decrease in PDP plot.
+
+The following PDP plot shows the relationship between scaled age and predicted probability of y=yes. The curve shows overall decreasing with a major drop in predicted probability at scaled age = 2. If we combine this plot with the EDA overlapped histogram in EDA, the pattern two pattern shows conflict as EDA indicates increase in predicted probability when scaled age is larger than 2. We may explain this conflict by the lack of data of scaled age larger than 2, which is a common problem for PDP plot.
 
 ```{r,cache=TRUE}
 library(pdp)
@@ -92,7 +102,8 @@ g <- ggplot(pdp_dt3, aes(age, yhat)) +
 g+ylab('prob')
 ```
 
-The plot following is the PDP plot of whether the previous campaign fails against the target variable. We can observe  that if previous campaign fails, holding all other variable constant, the person is slightly more likely to have term deposit at the bank.this is inconsistent with common sense. This is understandable because the shapley value plots indicates that the lower quantile, median, upper quantile contribution of this variable toward target variable is 0. In other words, decision tree does not create a meaningful boundary distinguishing these two variables. That is also why the PDP plot here shows a smaller difference in probability.
+The plot following is the PDP plot of whether the previous campaign fails against the target variable. We can observe that if previous campaign fails, holding all other variable constant, the person is slightly more likely to have term deposit at the bank.this is inconsistent with common sense. This is understandable because the shapley value plots indicates that the lower quantile, median, upper quantile contribution of this variable toward target variable is 0. In other words, decision tree does not create a meaningful boundary distinguishing these two variables. That is also why the PDP plot here shows a smaller difference in predicted predicted probability.
+
 ```{r message=FALSE, warning=FALSE,cache=TRUE}
 library(pdp)
 pdp_dt4 = partial(DTmodf,pred.var = 'poutcomefailure',prob = TRUE,type = 'classification')
@@ -104,11 +115,12 @@ g <- ggplot(pdp_dt4, aes(poutcomefailure,yhat)) +
 g+ylab('prob')
 ```
 
-The following cell shows the test accuracy of decision tree model. The model accuracy on test data is 0.8896359, which indicates it is a good model.
+The following cell shows the test accuracy of decision tree model. The model accuracy on test data is 0.8896359, which indicates it is a good model. But the AUC roc value is lower than other two values. The curve is also less bent toward the upper left corner comparing with the roc curves of logistic regression. We may conclude that the model only performs well in terms of overall accuracy.
 
-```{r,cache=TRUE}
+```{r,cache=TRUE,message=FALSE}
 DTpred = predict(DTmod,test_dat)[,2]
 mean((DTpred>0.5)==(test_dat$y=='yes'))
+auc(roc(test_dat$y,DTpred))
 ```
 
 ```{r,cache=TRUE}
@@ -139,3 +151,5 @@ g <- ggplot(rocdf, aes(x = fpr, y = tpr, label = label)) +
   geom_label_repel(color = "blue", size = 2)
 plotly::ggplotly(g)
 ```
+
+At the end, we may conclude that interest rate index, price index, way of contact, number of contact in previous campaign, age, and the outcome of previous campaign are the most dominant variables determine the prediction of whether the person has term deposit with decision tree model.

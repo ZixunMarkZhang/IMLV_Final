@@ -12,7 +12,7 @@ bankfull = subset(bankfull, select = -c(month,day_of_week,duration) )
 bankfull<-subset(bankfull, (job!='unknown') & (marital!='unknown') & (education!='unknown')&
                    (default!='unknown')& (housing!='unknown')&(loan!='unknown'))
 ggplot(bankfull, aes(x = y)) +
-  geom_bar()
+  geom_bar(fill = 'cadetblue2')
 set.seed(5293)
 ```
 
@@ -164,6 +164,7 @@ ggplot(bank,aes(x=InterestRateindex,fill=y))+
   geom_histogram()+
   scale_fill_brewer(palette = 'Set3')
 ```
+
 After briefing through the variables, we separate the dataset to train data and test data proportion 0.2, and we may goes to model creating.
 ```{r cache=TRUE}
 #keep binary variables

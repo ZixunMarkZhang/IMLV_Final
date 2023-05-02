@@ -1,4 +1,6 @@
 # [Random Forest]
+
+In this section, we may develop a random forest model predicting the response variable y with all variables we have. Since random forest is a black box model, we do not have appropriate tools to visualize it. We will directly use plots such as shapley value plot and PDP plot to inspect the most dominant parts of the random forest model.
 ```{r,cache=TRUE}
 set.seed(5293)
 library(randomForest)
@@ -9,7 +11,7 @@ pred <- function(model, newdata) {
 RFpred = predict(RFmod,test_dat,type = 'prob')[,2]
 
 ```
-After the decision tree model are built, we may access the feature importance by shapley value plot of the random forest. The plot following is showing the shapley value of each variable sorted by their absolute values of mean shapley values. The most influential 5 variables are price index, confidence index, age, whether the previous campaign fails,and whether the person has housing loan.
+After the random forest model are built, we may access the feature importance by shapley value plot of the random forest. The plot following is showing the shapley value of each variable sorted by their absolute values of mean shapley values. The most influential 5 variables are price index, confidence index, age, whether the previous campaign fails,and whether the person has housing loan. We will create PDP plot of these 5 variables to inspect if they actually create meaningful impact on prediction.
 
 ```{r,cache=TRUE}
 shap_values <- fastshap::explain(
@@ -25,7 +27,7 @@ ggplot(melt(shap_values),aes(value, reorder(variable, value, FUN = avgabs)))+
 ```
 
 
-
+The following PDP plot shows the relationship between scaled price index and predicted probability of y=yes. The curve shows overall increasing pattern. This result is consistent with what we find in logistic regression. However, it still fail to identify the pattern that the predicted probability is higher when the scaled price index is smaller than -1.2.
 
 ```{r,cache=TRUE}
 library(pdp)
@@ -38,6 +40,8 @@ g <- ggplot(pdp_rf, aes(priceIndex, yhat)) +
 g+ylab('prob')
 ```
 
+The following PDP plot shows the relationship between scaled confidence index and predicted probability of y=yes. The curve shows overall decreasing pattern. This result is patially consistent with what we find in EDA by identifying the high predicted probability at confidence index smaller than -1.2. However, it still fail to identify the pattern that the predicted probability is higher when the scaled price index is larger than 1. This could be caused by the lack of data in train data.
+
 ```{r,cache=TRUE}
 library(pdp)
 pdp_rf1 = partial(RFmod,pred.var = 'confidenceIndex',prob = TRUE,type = 'classification')
@@ -48,7 +52,8 @@ g <- ggplot(pdp_rf1, aes(confidenceIndex, yhat)) +
   theme_bw(16)
 g+ylab('prob')
 ```
-The plot following is the PDP plot of whether the person was contacted via telephone or cellular against the target variable. We can observe  that if the contact is by telephone, holding all other variable constant, the person is slightly more likely to have term deposit at the bank.this is inconsistent with what we observed in logistic regression, but same as the decision tree result. This is understandable because the shapley value plots indicates that the lower quantile, median, upper quantile contribution of this variable toward target variable is 0. In other words, random forest does not create a meaningful boundary distinguishing these two variables. That is also why the PDP plot here shows a smaller difference in probability.
+The following PDP plot shows the relationship between scaled age and predicted probability of y=yes. The curve shows overall decreasing with a major drop in predicted probability at scaled age = 2. This result is consistent with what we find in decision tree, and contradict to what we find in EDA. The reason of this contradiction is still the lack of sample with scaled age larger than 2.
+
 ```{r message=FALSE, warning=FALSE,cache=TRUE}
 library(pdp)
 pdp_rf2 = partial(RFmod,pred.var = 'age',prob = TRUE,type = 'classification')
@@ -59,7 +64,8 @@ g <- ggplot(pdp_rf2, aes(age,yhat)) +
   theme_bw(16)
 g+ylab('prob')
 ```
-The plot following is the PDP plot of whether the previous campaign fails against the target variable. We can observe  that if previous campaign fails, holding all other variable constant, the person is slightly more likely to have term deposit at the bank.this is inconsistent with what we observed in logistic regression or common sense, but similar to the PDP plot in decision tree section. This is understandable because the shapley value plots indicates that the lower quantile, median, upper quantile contribution of this variable toward target variable is 0. In other words, random forest does not create a meaningful boundary distinguishing these two variables. That is also why the PDP plot here shows a smaller difference in probability.
+The PDP plot following is the PDP plot of whether the previous campaign succeeded against the target variable. We can observe  that if previous campaign succeeded, holding all other variable constant, the person is slightly less likely to have term deposit at the bank.this is inconsistent with common sense. However, the shapley value plots indicates that the lower quantile, median, upper quantile contribution of this variable toward target variable is 0. In other words, random forest does not create a meaningful boundary distinguishing these two predicted probability values. 
+
 ```{r message=FALSE, warning=FALSE,cache=TRUE}
 library(pdp)
 pdp_rf3 = partial(RFmod,pred.var = 'poutcomesuccess',prob = TRUE,type = 'classification')
@@ -71,7 +77,8 @@ g <- ggplot(pdp_rf3, aes(poutcomesuccess,yhat)) +
 g+ylab('prob')
 ```
 
-The plot following is the PDP plot of whether the person has housing loan against the target variable. We can observe there is no difference in probability.This is understandable because the shapley value plots indicates that the lower quantile, median, upper quantile contribution of this variable toward target variable is 0. In other words, random forest does not create a meaningful boundary distinguishing these two variables. 
+The PDP plot following is the PDP plot of whether the person has housing loan against the target variable. We can observe there is no difference in predicted probability.This is understandable because the shapley value plots indicates that the lower quantile, median, upper quantile contribution of this variable toward target variable is 0. In other words, random forest does not create a meaningful boundary distinguishing these two variables. 
+
 ```{r message=FALSE, warning=FALSE,cache=TRUE}
 library(pdp)
 pdp_rf4 = partial(RFmod,pred.var = 'housing',prob = TRUE,type = 'classification')
@@ -82,9 +89,12 @@ g <- ggplot(pdp_rf4, aes(housing,yhat)) +
   theme_bw(16)
 g+ylab('prob')
 ```
-The following cell shows the test accuracy of random forest model. The model accuracy on test data is 0.8879961, which indicates it is a good model.
-```{r}
+The following cell shows the test accuracy of random forest model. The model accuracy on test data is 0.8879961, which indicates it is a good model. the AUC roc value is 0.7982, combining with the roc curve bent toward upperleft corner. We conclude that this model has the best performance in terms of both accuracy, and sensitivity.
+
+```{r message=FALSE}
 mean((RFpred>0.5)==(test_dat$y=='yes'))
+auc(roc(test_dat$y,RFpred))
+
 ```
 
 
@@ -116,3 +126,5 @@ g <- ggplot(rocdf, aes(x = fpr, y = tpr, label = label)) +
   geom_label_repel(color = "blue", size = 2)
 plotly::ggplotly(g)
 ```
+
+At the end, we may conclude that price index, confidence index, age, outcome of previous campaign, whether the person has housing loan are the most dominant variables determine the prediction of whether the person has term deposit with random forest model.

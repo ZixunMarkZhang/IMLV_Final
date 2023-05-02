@@ -1,6 +1,6 @@
 # [Logistic Regression]
 
-In this section, we will create a logistic regression model and try to interpret the most important variables and their influence on the target variables. The detailed information of the model is indicated as below. Through the p-values of each variables listed in the right most column, we can observe that whether the contact is via telephone, campaign, pdays, priceIndex, confidenceIndex, and interestRateIndex shows statsitical significance with small p-value. It indicates that these variables are more influential toward the target variable with non-zero coefficient.
+In this section, we will create a logistic regression model and try to interpret the most important variables and their influence on the target variables. The detailed information of the model is indicated as below. Through the p-values of each variables listed in the right most column, we can observe that whether the contact is via telephone, campaign, pdays, priceIndex, confidenceIndex, and interestRateIndex shows statistical significance with small p-value. It indicates that these variables are more influential toward the target variable with non-zero coefficient.
 
 ```{r message=FALSE, warning=FALSE, cache=TRUE}
 set.seed(5293)
@@ -9,7 +9,9 @@ fullmod<-glm(y~.,data=train_dat,family=binomial(link = 'logit'))
 LRpred = predict(fullmod,test_dat,type = 'response')
 summary(fullmod)
 ```
-After the logistic regression models are built, we may access the feature importance by shapley value plot. The plot above is showing the shapley value of each variable sorted by their absolute values of mean shapley values. The most influential 5 variables are interest rate index, price index, default, pdays, and whether the previous campaign fails.
+
+After the logistic regression models are built, we may access the feature importance by shapley value plot. The plot above is showing the shapley value of each variable sorted by their absolute values of mean shapley values. The most influential 5 variables are interest rate index, price index, default, number of days since last contact, and whether the previous campaign fails. We will create PDP plot of these 5 variables to inspect if they actually create meaningful impact on prediction.
+
 ```{r message=FALSE, warning=FALSE,cache=TRUE}
 library(caret)
 library(reshape2)
@@ -33,7 +35,8 @@ ggplot(melt(shap_values),aes(value, reorder(variable, value, FUN = abs)))+
   geom_boxplot()
 ```
 
-To begin with, we create a partial dependence plot(named as PDP plot in following sections) showing the relationship between whether the previous campaign fails and the target variable. For all the PDP plots in this project, we set the y axis as the probability of y=yes instead of log odd by parameter prob=TRUE to make the plot more interpretable. The plot following shows the relationship between interest rate index and probability of y=yes. The line shows decreasing trend with positive concavity, Indicating that the probability of the person having term deposit decreases with the increase in interest rate index.
+To begin with, we create a partial dependence plot(named as PDP plot in following sections) showing the relationship between scaled interest rate index and the target variable. For all the PDP plots in this project, we set the y axis as the predicted probability of y=yes instead of log odd by parameter prob=TRUE to make the plot more interpretable. The line shows decreasing trend with positive concavity, Indicating that the predicted probability of the person having term deposit decreases with the increase in scaled interest rate index.This is consistent with what we found in EDA where the lower interest rate index corresponds to higher probability of y=yes.
+
 ```{r message=FALSE, warning=FALSE,cache=TRUE}
 library(pdp)
 pdp_lr = partial(object = fullmod,pred.var = 'InterestRateindex',prob = TRUE,type = 'classification')
@@ -45,7 +48,8 @@ g <- ggplot(pdp_lr, aes(InterestRateindex, yhat)) +
 g+ylab('prob')
 ```
 
-The plot following shows the relationship between price index and probability of y=yes.The line shows increasing trend with positive concavity, Indicating that the probability of the person having term deposit increases with the increase in price index.
+The plot following shows the relationship between scaled price index and predicted probability of y=yes.The line shows increasing trend with positive concavity, Indicating that the predicted probability of the person having term deposit increases with the increase in scaled price index.This plot partially reflects what we found in EDA. It only shows that the probability of y=yes is higher when scaled price index value is large, but ignore the fact that the probability is also high when scaled price index value is smaller than -1.
+
 ```{r warning=FALSE,cache=TRUE}
 library(pdp)
 pdp_lr2 = partial(fullmod,pred.var = 'priceIndex',prob = TRUE,type = 'classification')
@@ -57,7 +61,8 @@ g <- ggplot(pdp_lr2, aes(priceIndex, yhat)) +
 g+ylab('prob')
 ```
 
-The plot following is the PDP plot of whether the person has credit default against the target variable. We can observe  that if the person has credit default, holding all other variable constant, the person will not have term deposit.
+The plot following is the PDP plot of whether the person has credit default against the target variable. We can observe that if the person has credit default, holding all other variable constant, the person will not have term deposit. This is consistent with what we found in EDA where the default yes corresponds to zero probability of y=yes.
+
 ```{r message=FALSE, warning=FALSE,cache=TRUE}
 library(pdp)
 pdp_lr3 = partial(fullmod,pred.var = 'default',prob = TRUE,type = 'classification')
@@ -69,7 +74,8 @@ g <- ggplot(pdp_lr3, aes(default,yhat)) +
 g+ylab('prob')
 ```
 
-The plot following shows the relationship between confidence index and probability of y=yes.The line shows decreasing trend, Indicating that the probability of the person having term deposit decreases with the increase in number of days since last previous campaign.
+The plot following shows the relationship between scaled number of days since last contacted and predicted probability of y=yes.The line shows decreasing trend, Indicating that the predicted probability of the person having term deposit decreases with the increase in scaled confidence index. This is consistent with what we found in EDA where the lower scaled pdays corresponds to higher probability of y=yes.
+
 ```{r warning=FALSE,cache=TRUE}
 library(pdp)
 pdp_lr3 = partial(fullmod,pred.var = 'pdays',prob = TRUE,type = 'classification')
@@ -81,7 +87,7 @@ g <- ggplot(pdp_lr3, aes(pdays, yhat)) +
 g+ylab('prob')
 ```
 
-The plot following is the PDP plot of whether the person was contacted via telephone or cellular against the target variable. It is quite obvious that if the previous campaign fails, holding all other variable constant, the person is much less likely to have term deposit at the bank.
+The plot following is the PDP plot of whether the person was contacted via telephone or cellular against the target variable. It is quite obvious that if the previous campaign fails, holding all other variable constant, the person is much less likely to have term deposit at the bank. This is consistent with what we found in EDA where the failed campaign index corresponds to lower probability of y=yes.
 
 ```{r message=FALSE, warning=FALSE,cache=TRUE}
 library(pdp)
@@ -94,11 +100,12 @@ g <- ggplot(pdp_lr4, aes(poutcomefailure,yhat)) +
 g+ylab('prob')
 ```
 
+The following cell shows the test accuracy of logistic regression model. The model accuracy on test data is 0.8876681. the AUC roc value is 0.7789, combining with the roc curve bent toward upperleft corner. We conclude that this model performs well in terms of both accuracy, and sensitivity.
 
-
-The following cell shows the test accuracy of logitic regression model. The model accuracy on test data is 0.8876681, which indicates it is a good model.
-```{r}
+```{r warning=FALSE,message=FALSE}
+library(pROC)
 mean((LRpred>0.5)==(test_dat$y=='yes'))
+auc(roc(test_dat$y,LRpred))
 ```
 
 ```{r, cache=TRUE}
@@ -129,6 +136,4 @@ g <- ggplot(rocdf, aes(x = fpr, y = tpr, label = label)) +
 plotly::ggplotly(g)
 ```
 
-
-
-
+At the end, we may conclude that interest rate index, price index, whether the person has credit default, days since last contact, and whether the last campaign fails are the most dominant variables determine the prediction of whether the person has term deposit with logistic regression model.

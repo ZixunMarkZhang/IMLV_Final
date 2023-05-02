@@ -124,20 +124,17 @@
 7 - loan: has personal loan? (categorical: ‘no’,‘yes’,‘unknown’)<br />
 # related with the last contact of the current campaign:<br />
 8 - contact: contact communication type (categorical: ‘cellular’,‘telephone’)<br />
-9 - month: last contact month of year (categorical: ‘jan’, ‘feb’, ‘mar’, ..., ‘nov’, ‘dec’)<br />
-10 - day_of_week: last contact day of the week (categorical: ‘mon’,‘tue’,‘wed’,‘thu’,‘fri’)<br />
-11 - duration: last contact duration, in seconds (numeric). Important note: this attribute highly affects the output target (e.g., if duration=0 then y=‘no’). Yet, the duration is not known before a call is performed. Also, after the end of the call y is obviously known. Thus, this input should only be included for benchmark purposes and should be discarded if the intention is to have a realistic predictive model.<br />
 # other attributes:<br />
-12 - campaign: number of contacts performed during this campaign and for this client (numeric, includes last contact)<br />
-13 - pdays: number of days that passed by after the client was last contacted from a previous campaign (numeric; 999 means client was not previously contacted)<br />
-14 - previous: number of contacts performed before this campaign and for this client (numeric)<br />
-15 - poutcome: outcome of the previous marketing campaign (categorical: ‘failure’,‘nonexistent’,‘success’)<br />
+9 - campaign: number of contacts performed during this campaign and for this client (numeric, includes last contact)<br />
+10 - pdays: number of days that passed by after the client was last contacted from a previous campaign (numeric; 999 means client was not previously contacted)<br />
+11 - previous: number of contacts performed before this campaign and for this client (numeric)<br />
+12 - poutcome: outcome of the previous marketing campaign (categorical: ‘failure’,‘nonexistent’,‘success’)<br />
 # social and economic context attributes<br />
-16 - emp.var.rate: employment variation rate - quarterly indicator (numeric)<br />
-17 - cons.price.idx: consumer price index - monthly indicator (numeric)<br />
-18 - cons.conf.idx: consumer confidence index - monthly indicator (numeric)<br />
-19 - euribor3m: euribor 3 month rate - daily indicator (numeric)<br />
-20 - nr.employed: number of employees - quarterly indicator (numeric)</p>
+13 - emp.var.rate: employment variation rate - quarterly indicator (numeric)<br />
+14 - cons.price.idx: consumer price index - monthly indicator (numeric)<br />
+15 - cons.conf.idx: consumer confidence index - monthly indicator (numeric)<br />
+16 - euribor3m: euribor 3 month rate - daily indicator (numeric)<br />
+17 - nr.employed: number of employees - quarterly indicator (numeric)</p>
 <p>The label of this data set to predict is a binary variable whether the customer subscribed a term deposit.</p>
 <p>The features will be preprocessed at the beginning of the project. The categorical data will be encoded by one hot encoder. The numerical data will be normalized if it significantly different mean and standard deviation.</p>
 <ol start="2" style="list-style-type: decimal">
@@ -153,9 +150,9 @@
 <p>3.2 Decision Tree</p>
 <p>Decision tree will build a model where the nodes splits by calculating the cutoff with minimum the gini index, and the tree stops generating at gini index reaches 0 at each nodes. After the tree is built, we may access it to make classification predictions. Even if overfitting is likely to happen, we may address this by prune the tree.</p>
 <p>3.3 Random Forest</p>
-<p>Random forest is a model where the classification decision is made according to most common decision tree result in a number of random generated decision trees. This model is also likely to have overfitting. Hyperparameter tuning will be deployed to ensure there is no overfitting.</p>
-<p>After the models are built, the optimal thresholds will be selected for each model according to context requirement such as high specificity or high sensitivity.</p>
-<p>The evaluation of the models is not only seeking for accuracy but also interpretability. Visualization tools such as confusion matrix, ROC curve, and feature importance plot will be deployed in the project to ensure the models are understandable and reproducible. At the end of this project, the model selection will be based on not only numerical metrics such as accuracy or loss but also visualized metrics such as feature importance plot and ROC curve to ensure interpretability, acceptable model complexity, and preciseness.</p>
+<p>Random forest is a model where the classification decision is made according to most common decision tree result in a number of random generated decision trees. This model is also a candidate of best model.</p>
+<p>After the models are built, we will try to visualize the effect of each feature with shapley value plot. Then we will select 5 most influential varaibles from each models, create partial dependent plot, and try to interpret the effect of the variable towar the target variable.</p>
+<p>The evaluation of the models is not only seeking for accuracy but also interpretability. At the end of this project, the model selection will be based on not only numerical metrics such as accuracy or loss but also visualized metrics such as feature importance plot and ROC curve to ensure interpretability, acceptable model complexity, and preciseness.</p>
 <p>Citation</p>
 <ol style="list-style-type: decimal">
 <li>[Moro et al., 2014] S. Moro, P. Cortez and P. Rita. A Data-Driven Approach to Predict the Success of Bank Telemarketing. Decision Support Systems, Elsevier, 62:22-31, June 2014, <a href="https://archive.ics.uci.edu/ml/datasets/Bank+Marketing" class="uri">https://archive.ics.uci.edu/ml/datasets/Bank+Marketing</a></li>

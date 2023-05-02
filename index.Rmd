@@ -20,20 +20,17 @@ The data set in this project is the [Bank Marketing Data Set](https://archive.ic
 7 - loan: has personal loan? (categorical: 'no','yes','unknown')\
 \# related with the last contact of the current campaign:\
 8 - contact: contact communication type (categorical: 'cellular','telephone')\
-9 - month: last contact month of year (categorical: 'jan', 'feb', 'mar', \..., 'nov', 'dec')\
-10 - day_of_week: last contact day of the week (categorical: 'mon','tue','wed','thu','fri')\
-11 - duration: last contact duration, in seconds (numeric). Important note: this attribute highly affects the output target (e.g., if duration=0 then y='no'). Yet, the duration is not known before a call is performed. Also, after the end of the call y is obviously known. Thus, this input should only be included for benchmark purposes and should be discarded if the intention is to have a realistic predictive model.\
 \# other attributes:\
-12 - campaign: number of contacts performed during this campaign and for this client (numeric, includes last contact)\
-13 - pdays: number of days that passed by after the client was last contacted from a previous campaign (numeric; 999 means client was not previously contacted)\
-14 - previous: number of contacts performed before this campaign and for this client (numeric)\
-15 - poutcome: outcome of the previous marketing campaign (categorical: 'failure','nonexistent','success')\
+9 - campaign: number of contacts performed during this campaign and for this client (numeric, includes last contact)\
+10 - pdays: number of days that passed by after the client was last contacted from a previous campaign (numeric; 999 means client was not previously contacted)\
+11 - previous: number of contacts performed before this campaign and for this client (numeric)\
+12 - poutcome: outcome of the previous marketing campaign (categorical: 'failure','nonexistent','success')\
 \# social and economic context attributes\
-16 - emp.var.rate: employment variation rate - quarterly indicator (numeric)\
-17 - cons.price.idx: consumer price index - monthly indicator (numeric)\
-18 - cons.conf.idx: consumer confidence index - monthly indicator (numeric)\
-19 - euribor3m: euribor 3 month rate - daily indicator (numeric)\
-20 - nr.employed: number of employees - quarterly indicator (numeric)
+13 - emp.var.rate: employment variation rate - quarterly indicator (numeric)\
+14 - cons.price.idx: consumer price index - monthly indicator (numeric)\
+15 - cons.conf.idx: consumer confidence index - monthly indicator (numeric)\
+16 - euribor3m: euribor 3 month rate - daily indicator (numeric)\
+17 - nr.employed: number of employees - quarterly indicator (numeric)
 
 The label of this data set to predict is a binary variable whether the customer subscribed a term deposit.
 
@@ -57,11 +54,11 @@ Decision tree will build a model where the nodes splits by calculating the cutof
 
 3.3 Random Forest
 
-Random forest is a model where the classification decision is made according to most common decision tree result in a number of random generated decision trees. This model is also likely to have overfitting. Hyperparameter tuning will be deployed to ensure there is no overfitting.
+Random forest is a model where the classification decision is made according to most common decision tree result in a number of random generated decision trees. This model is also a candidate of best model.
 
-After the models are built, the optimal thresholds will be selected for each model according to context requirement such as high specificity or high sensitivity.
+After the models are built, we will try to visualize the effect of each feature with shapley value plot. Then we will select 5 most influential varaibles from each models, create partial dependent plot, and try to interpret the effect of the variable towar the target variable.
 
-The evaluation of the models is not only seeking for accuracy but also interpretability. Visualization tools such as confusion matrix, ROC curve, and feature importance plot will be deployed in the project to ensure the models are understandable and reproducible. At the end of this project, the model selection will be based on not only numerical metrics such as accuracy or loss but also visualized metrics such as feature importance plot and ROC curve to ensure interpretability, acceptable model complexity, and preciseness.
+The evaluation of the models is not only seeking for accuracy but also interpretability.  At the end of this project, the model selection will be based on not only numerical metrics such as accuracy or loss but also visualized metrics such as feature importance plot and ROC curve to ensure interpretability, acceptable model complexity, and preciseness.
 
 Citation
 
